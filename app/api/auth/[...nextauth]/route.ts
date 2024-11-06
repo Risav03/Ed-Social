@@ -24,14 +24,16 @@ const handler = NextAuth({
         const { email, password } = credentials;
     
         const user = await User.findOne({ email });
+        console.log(email);
 
         const hmac = crypto.createHmac('sha256', process.env.KEY as string);
         hmac.update(password);
         const hashedPassword = hmac.digest('hex');
 
+        console.log(hashedPassword);
         if (user) {
 
-          if (user.password === hashedPassword) {
+          if (user.pwd === hashedPassword) {
             return user;
           } else {
             throw new Error('Invalid credentials');
@@ -43,6 +45,7 @@ const handler = NextAuth({
             password: hashedPassword,
 
           });
+
           return newUser;
         }
       }

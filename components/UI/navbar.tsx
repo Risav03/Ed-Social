@@ -33,7 +33,7 @@ export const Navbar = () => {
         </div>
 
         {loginModal && <>
-            <ConnectModal/>
+            <ConnectModal setLoginModal={setLoginModal}/>
         </>}
     </div>
   )

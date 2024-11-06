@@ -5,13 +5,6 @@ type UserType = {
     profileImage:string;
     banner:string;
     bio:string;
-    twitter:string;
-    instagram:string;
-    youtube:string;
-    linkedin:string;
-    facebook:string;
-    website:string;
-    email:string;
     followers:number;
     following:number;
     searchHistory:Array<string>;

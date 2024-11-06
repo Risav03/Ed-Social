@@ -5,6 +5,7 @@ const UserSchema = new Schema<UserType>({
     username: {
         type: String,
         default: "",
+        required:true
     },
     userhandle: {
         type: String,
@@ -14,6 +15,7 @@ const UserSchema = new Schema<UserType>({
     pwd: {
         type: String,
         default: "",
+        required:true
     },
     profileImage: {
         type: String,
@@ -24,27 +26,6 @@ const UserSchema = new Schema<UserType>({
     bio: {
         type: String,
         default: ""
-    },
-    twitter: {
-        type: String,
-    },
-    instagram: {
-        type: String,
-    },
-    youtube: {
-        type: String,
-    },
-    linkedin: {
-        type: String,
-    },
-    facebook: {
-        type: String,
-    },
-    website: {
-        type: String,
-    },
-    email: {
-        type: String,
     },
     followers: {
         type: Number,
