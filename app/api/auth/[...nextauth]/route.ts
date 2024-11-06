@@ -69,12 +69,10 @@ const handler = NextAuth({
         return token;
       }
 
-      // Add user id and provider to the token
       if (account?.provider && user) {
         token.provider = account.provider;
         token.id = user.id;
 
-        // Generate your own access token and refresh token
         const accessToken = jwt.sign(
           { userId: user.id, provider: account.provider },
           // @ts-ignore
@@ -97,12 +95,12 @@ const handler = NextAuth({
         token.accessToken = accessToken;
         token.refreshToken = refreshToken;
         token.picture = dbUser.profileImage;
+
       }
       return token;
     },
     async session({ session, token }: any) {
 
-      // Attach access token and refresh token to the session
       session.accessToken = token.accessToken;
       session.refreshToken = token.refreshToken;
       session.role = token.role;
@@ -110,13 +108,14 @@ const handler = NextAuth({
       session.username = token.name;
       session.userhandle = token.handle;
       session.userId = token.id;
+      session.email = token.email;
 
       return session;
     },
     async redirect({ url, baseUrl }) {
-      // Allows relative callback URLs
+
       if (url.startsWith("/")) return `${baseUrl}${url}`
-      // Allows callback URLs on the same origin
+
       else if (new URL(url).origin === baseUrl) return url
       return baseUrl
     }

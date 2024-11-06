@@ -1,6 +1,7 @@
 type UserType = {
     username: string;
     userhandle:string;
+    email:string;
     pwd:string;
     profileImage:string;
     banner:string;

@@ -7,6 +7,11 @@ const UserSchema = new Schema<UserType>({
         default: "",
         required:true
     },
+    email: {
+        type: String,
+        default: "",
+        required:true
+    },
     userhandle: {
         type: String,
         unique: true,

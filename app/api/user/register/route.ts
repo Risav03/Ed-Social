@@ -17,7 +17,7 @@ export async function POST(req:any){
             return NextResponse.json({message:"User with same email exists"},{status:405})
         }
 
-        const userhandle = Math.random()*100000000
+        const userhandle = Math.round(Math.random()*1000000000)
 
         const userhandleExists = await User.findOne({userhandle:userhandle});
         if(userhandleExists){
