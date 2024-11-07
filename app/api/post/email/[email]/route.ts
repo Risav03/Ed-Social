@@ -20,6 +20,8 @@ export async function POST(req:any){
 
         console.log(content, media, email, date);
 
+        var mediaKey = ""
+
         if(media){
             const buffer = Buffer.from(await media.arrayBuffer());
             const key = `users/${email.replace("@","-")}/posts/${date}`
@@ -28,9 +30,9 @@ export async function POST(req:any){
             if(!res){
                 return NextResponse.json({message: "Upload to aws failed"}, {status:406})
             }
+            mediaKey = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_S3_REGION}.amazonaws.com/users/${email.replace("@","-")}/posts/${date}`
         }
 
-        const mediaKey = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_S3_REGION}.amazonaws.com/users/${email.replace("@","-")}/posts/${date}`
 
         console.log("Workds till here");
         const post = await Post.create({
@@ -38,7 +40,6 @@ export async function POST(req:any){
             content:content,
             media: mediaKey
         })
-        console.log("Workds till here2222");
 
 
         return NextResponse.json({post:post},{status:200});

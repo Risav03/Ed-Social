@@ -6,9 +6,8 @@ import { PostFetcher } from '../Posts/postFetcher'
 
 export const Dashboard = () => {
 
-
     return (
-        <div className='border-r-[2px] border-slate-400/20 h-screen max-h-screen'>
+        <div className=' h-screen max-h-screen'>
             <div className='border-b-[1px] border-slate-400/20 pb-10'>
                 <DashboardInfo/>
             </div>

@@ -16,9 +16,9 @@ export async function GET(req:any){
             return NextResponse.json({error:"User not found"},{status:404})
         }
 
-        const posts = await Post.find({createdBy:user?._id});
+        const posts = await Post.find({createdBy:user?._id}).populate('createdBy');
         
-        return NextResponse.json({posts:posts},{status:200})
+        return NextResponse.json({posts:posts.reverse()},{status:200})
     }
     catch(err){
         return NextResponse.json({error:err},{status:500})

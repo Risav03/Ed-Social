@@ -21,7 +21,11 @@ export const useNavbarHooks = () => {
         try{
             const formdata = new FormData();
             formdata.append('content', postContent);
-            formdata.append('media', postMedia as File);
+
+            if(postMedia){
+                formdata.append('media', postMedia as File);
+            }
+            
             formdata.append('id', user?._id as string)
 
             const res = await axios.post("/api/post/email/"+session?.user?.email, formdata);
@@ -30,6 +34,8 @@ export const useNavbarHooks = () => {
                 toast.success("Post created!");
                 getPosts();
                 setPostModal(false);
+                setPostContent("");
+                setPostMedia(null)
             }
 
         }

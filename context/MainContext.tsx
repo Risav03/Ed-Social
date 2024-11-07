@@ -51,12 +51,11 @@ export const GlobalContextProvider = ({ children } : { children: ReactNode}) => 
     async function getPosts(){
         try{
           if(pathname == "/"){
-            //ALL POSTS
+            const res = await axios.get("/api/post/");
+            setPosts(res.data.posts)
           }
           else if(pathname.includes("profile")){
-            console.log(pathname.split("/")[2])
             const res = await axios.get("/api/post/"+pathname.split("/")[2]);
-            console.log(res);
 
             setPosts(res.data.posts)
           }

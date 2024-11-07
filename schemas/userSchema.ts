@@ -33,7 +33,7 @@ const UserSchema = new Schema<UserType>({
     },
     bio: {
         type: String,
-        default: ""
+        default: "Enter a really cool description about you."
     },
     followers: {
         type: Number,

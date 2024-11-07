@@ -1,6 +1,7 @@
 import React, { Dispatch, SetStateAction, useState } from 'react'
 import axios from "axios"
 import { signIn, signOut, useSession } from "next-auth/react";
+import { toast } from 'react-toastify';
 
 export const useConnectHook = ({ setLoginModal }: { setLoginModal: Dispatch<SetStateAction<boolean>> }) => {
 
@@ -13,7 +14,8 @@ export const useConnectHook = ({ setLoginModal }: { setLoginModal: Dispatch<SetS
     async function register() {
         try {
             const res = await axios.post("/api/user/register", { email: email, username: username, pwd: pwd });
-            console.log(res);
+            toast.success("Successfully registered. Please login");
+            setType("login");
         }
         catch (err) {
             console.log(err);

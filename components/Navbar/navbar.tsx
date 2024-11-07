@@ -27,8 +27,8 @@ export const Navbar = () => {
         <div className='mt-10'>
             <ol className='flex flex-col gap-2'>
                 <li><Link href="/"><div className='hover:bg-slate-400/10 text-slate-400 hover:text-white pl-4 gap-2 text-lg font-semibold hover:font-extrabold pr-10 rounded-full w-fit flex items-center text-left duration-200 h-10'><CgHomeAlt/>Home</div></Link></li>
-                {user && <li><Link href={`/profile/${user?.userhandle}`}><div className='hover:bg-slate-400/10 text-slate-400 hover:text-white pl-4 gap-2 text-lg font-semibold hover:font-extrabold pr-10 rounded-full w-fit flex items-center text-left duration-200 h-10'><CgProfile/>Profile</div></Link></li>}
-                <ActionButton action='Post' onClick={()=>{setPostModal(true)}} />
+                {user && <> <li><Link href={`/profile/${user?.userhandle}`}><div className='hover:bg-slate-400/10 text-slate-400 hover:text-white pl-4 gap-2 text-lg font-semibold hover:font-extrabold pr-10 rounded-full w-fit flex items-center text-left duration-200 h-10'><CgProfile/>Profile</div></Link></li>
+                <li><ActionButton action='Post' onClick={()=>{setPostModal(true)}} /></li></>}
             </ol>
         </div>
         <div className='absolute bottom-2 right-2'>
