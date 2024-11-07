@@ -10,7 +10,7 @@ export default function Profile() {
                 <div className="w-60">
                     <Navbar />
                 </div>
-                <div className="w-[50rem]">
+                <div className="w-[40rem]">
 
                 </div>  
                 <div className="w-60">

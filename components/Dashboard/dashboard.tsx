@@ -1,6 +1,7 @@
 
 import React from 'react'
 import { DashboardInfo } from './dashboardInfo'
+import { PostFetcher } from '../Posts/postFetcher'
 
 
 export const Dashboard = () => {
@@ -12,7 +13,7 @@ export const Dashboard = () => {
                 <DashboardInfo/>
             </div>
             <div className='overflow-y-scroll'>
-
+                <PostFetcher/>
             </div>
         </div>
     )

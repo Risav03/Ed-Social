@@ -14,6 +14,7 @@ export async function POST(req:any){
         const content = formData.get('content');
         const media = formData.get('media');
         const email = req.nextUrl.pathname.split("/")[4];
+        const id = formData.get('id')
 
         const date = Date.now()
 
@@ -29,12 +30,16 @@ export async function POST(req:any){
             }
         }
 
-        const mediaKey = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_S3_REGION}.amazonaws.com/users/${email.replace("@","-")}/posts/post`
+        const mediaKey = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_S3_REGION}.amazonaws.com/users/${email.replace("@","-")}/posts/${date}`
 
+        console.log("Workds till here");
         const post = await Post.create({
+            createdBy: id,
             content:content,
             media: mediaKey
         })
+        console.log("Workds till here2222");
+
 
         return NextResponse.json({post:post},{status:200});
     }

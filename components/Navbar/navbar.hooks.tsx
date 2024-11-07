@@ -1,4 +1,5 @@
 "use client"
+import { useGlobalContext } from '@/context/MainContext';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import React, { useState } from 'react'
@@ -10,7 +11,7 @@ export const useNavbarHooks = () => {
     const[postModal, setPostModal] = useState<boolean>(false);
     const[postContent, setPostContent] = useState<string>("");
     const[postMedia, setPostMedia] = useState<File|null>();
-
+    const{getPosts, user} = useGlobalContext()
     const{data:session} = useSession()
 
     async function post(){
@@ -21,11 +22,14 @@ export const useNavbarHooks = () => {
             const formdata = new FormData();
             formdata.append('content', postContent);
             formdata.append('media', postMedia as File);
+            formdata.append('id', user?._id as string)
 
             const res = await axios.post("/api/post/email/"+session?.user?.email, formdata);
 
             if(res){
-                toast.success("Post created!")
+                toast.success("Post created!");
+                getPosts();
+                setPostModal(false);
             }
 
         }

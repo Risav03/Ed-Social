@@ -3,17 +3,20 @@
 import { EditProfile } from "@/components/Dashboard/EditProfile/editProfile";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import { usePathname } from "next/navigation";
 import { createContext, useContext, Dispatch, SetStateAction, useState, ReactNode, useEffect } from "react";
 
 type GlobalContextType = {
   user: UserType | null;
   setUser: Dispatch<SetStateAction<UserType | null>>;
+  posts: Array<PostType | null> | null;
+  setPosts: Dispatch<SetStateAction<Array<PostType>>>;
   getUser: () => void;
   showSearch: boolean;
   setShowSearch: Dispatch<SetStateAction<boolean>>;
   showSidebar: boolean;
   setShowSidebar: Dispatch<SetStateAction<boolean>>;
-
+  getPosts: () => void;
   editProfile: boolean;
   setEditProfile: Dispatch<SetStateAction<boolean>>;
 
@@ -23,6 +26,9 @@ const GlobalContext = createContext<GlobalContextType>({
   user: null,
   setUser: () => { },
   getUser: () => { },
+  getPosts: () => {},
+  posts: null,
+  setPosts: ()=>{},
   showSearch: false,
   setShowSearch: () => { },
   showSidebar: false,
@@ -38,6 +44,33 @@ export const GlobalContextProvider = ({ children } : { children: ReactNode}) => 
   const [showSearch, setShowSearch] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const {data: session} = useSession();
+
+  const[posts, setPosts] = useState<Array<PostType>>([]);
+    const pathname = usePathname()
+
+    async function getPosts(){
+        try{
+          if(pathname == "/"){
+            //ALL POSTS
+          }
+          else if(pathname.includes("profile")){
+            console.log(pathname.split("/")[2])
+            const res = await axios.get("/api/post/"+pathname.split("/")[2]);
+            console.log(res);
+
+            setPosts(res.data.posts)
+          }
+            
+        }
+        catch(err){
+            console.log(err);
+        }
+    }
+
+    useEffect(()=>{
+        getPosts()
+    },[pathname])
+
 
   const[editProfile, setEditProfile] = useState<boolean>(false);
 
@@ -70,7 +103,7 @@ export const GlobalContextProvider = ({ children } : { children: ReactNode}) => 
       user, setUser, getUser,
       showSearch, setShowSearch,
       showSidebar, setShowSidebar,
-      editProfile, setEditProfile
+      editProfile, setEditProfile, posts, getPosts, setPosts
     }}>
       {children}
     </GlobalContext.Provider>

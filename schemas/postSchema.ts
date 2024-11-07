@@ -2,6 +2,11 @@ import mongoose, { Schema, model, models, trusted } from 'mongoose';
 
 const PostSchema = new Schema<PostType>({
 
+    createdBy:{
+        type:Schema.Types.ObjectId,
+        required:true,
+        ref:'User'
+    },
     content:{
         type:String,
         default:""

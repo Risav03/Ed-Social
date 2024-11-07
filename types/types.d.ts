@@ -1,3 +1,5 @@
+
+
 type UserType = {
     _id:string;
     username: string;
@@ -18,6 +20,7 @@ type UserType = {
 
 type PostType = {
     _id:string;
+    createdBy:ObjectId;
     content:string;
     media:string;
     likes:number;
