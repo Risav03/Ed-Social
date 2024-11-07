@@ -4,6 +4,7 @@ type UserType = {
     email:string;
     pwd:string;
     profileImage:string;
+    website:string;
     banner:string;
     bio:string;
     followers:number;

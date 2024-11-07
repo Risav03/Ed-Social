@@ -28,6 +28,9 @@ const UserSchema = new Schema<UserType>({
     banner: {
         type: String,
     },
+    website:{
+        type:String
+    },
     bio: {
         type: String,
         default: ""

@@ -4,16 +4,16 @@ import { Navbar } from "@/components/UI/navbar";
 
 export default function Profile() {
     return (
-        <div className=" p-16 max-md:px-4 max-md:py-10">
+        <div className="max-w-[150rem] p-16 max-md:px-4 max-md:py-10">
             <Background />
-            <div className="grid grid-flow-col grid-cols-12">
-                <div className="col-span-3 w-full">
+            <div className="flex justify-center">
+                <div className="w-60">
                     <Navbar />
                 </div>
-                <div className="col-span-6">
+                <div className="w-[50rem]">
                     <Dashboard/>
                 </div>  
-                <div className="col-span-3">
+                <div className="w-60">
 
                 </div>
             </div>
