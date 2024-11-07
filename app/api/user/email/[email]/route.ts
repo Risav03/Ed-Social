@@ -2,6 +2,41 @@ import { connectToDB } from "@/controllers/databaseController";
 import User from "@/schemas/userSchema";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { AuthService } from "@/services/authService";
+
+const s3Client = new S3Client({
+    region: process.env.AWS_S3_REGION,
+    credentials: {
+        accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID as string,
+        secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY as string
+    }
+});
+
+async function uploadPicToS3 (file:Buffer, email:string, type:string) {
+
+    const fileBuffer = file;
+    console.log(fileBuffer);
+    try{
+        if(file){
+            const params = {
+                Bucket: process.env.AWS_S3_BUCKET_NAME,
+                Key: `users/${email}/info/${type}`,
+                Body: fileBuffer,
+                ContentType: "image/png"
+            }
+            const command = new PutObjectCommand(params);
+            await s3Client.send(command);
+        }
+
+        return true;
+    }
+    catch(e){
+        console.error("This is error: ", e);
+        return false
+    }
+    
+}
 
 export async function GET(req:any){
     try{
@@ -20,5 +55,52 @@ export async function GET(req:any){
     }
     catch(err){
         return NextResponse.json({error:err},{status:500})
+    }
+}
+
+export async function PATCH(req:any){
+    await AuthService.getAuthenticatedUser(req);
+    try{
+        const formData = await req.formData();
+        const username = formData.get('username');
+        const userhandle = formData.get('userhandle');
+        const bio = formData.get('bio');
+        const email = await req.nextUrl.pathname.split("/")[4];
+
+        const profilePic = formData.get('profilePic');
+        const banner = formData.get('banner');
+
+        const user = await User.findOne({email:email});
+
+        if(!user){
+            return NextResponse.json({error: "User not found"}, {status:400});
+        }
+
+        if(profilePic){
+            const profileBuffer = Buffer.from(await profilePic.arrayBuffer());
+            await uploadPicToS3(profileBuffer, email.replace("@","-"), "profilePic");
+        }
+
+        if(banner){
+            const bannerBuffer = Buffer.from(await banner.arrayBuffer());
+            await uploadPicToS3(bannerBuffer, email.replace("@", "-"), "banner");
+        }
+
+        const profilePicLink = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_S3_REGION}.amazonaws.com/users/${email.replace("@","-")}/info/profilePic`;
+        const bannerLink = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_S3_REGION}.amazonaws.com/users/${email.replace("@","-")}/info/banner`;
+
+        user.username = username;
+        user.userhandle = userhandle;
+        user.bio = bio;
+        user.profileImage = profilePicLink;
+        user.banner = bannerLink;
+
+        await user.save();
+
+        return NextResponse.json({updatedUser: user},{status:200})
+
+    }
+    catch(err){
+        console.log(err);
     }
 }

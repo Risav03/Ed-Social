@@ -1,5 +1,6 @@
 "use client";
 
+import { EditProfile } from "@/components/Dashboard/EditProfile/editProfile";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { createContext, useContext, Dispatch, SetStateAction, useState, ReactNode, useEffect } from "react";
@@ -13,6 +14,9 @@ type GlobalContextType = {
   showSidebar: boolean;
   setShowSidebar: Dispatch<SetStateAction<boolean>>;
 
+  editProfile: boolean;
+  setEditProfile: Dispatch<SetStateAction<boolean>>;
+
 }
 
 const GlobalContext = createContext<GlobalContextType>({
@@ -22,7 +26,9 @@ const GlobalContext = createContext<GlobalContextType>({
   showSearch: false,
   setShowSearch: () => { },
   showSidebar: false,
-  setShowSidebar: () => { }
+  setShowSidebar: () => { },
+  editProfile: false,
+  setEditProfile: () => { },
 
 });
 
@@ -32,6 +38,8 @@ export const GlobalContextProvider = ({ children } : { children: ReactNode}) => 
   const [showSearch, setShowSearch] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const {data: session} = useSession();
+
+  const[editProfile, setEditProfile] = useState<boolean>(false);
 
   async function getUser(){
     try{
@@ -62,6 +70,7 @@ export const GlobalContextProvider = ({ children } : { children: ReactNode}) => 
       user, setUser, getUser,
       showSearch, setShowSearch,
       showSidebar, setShowSidebar,
+      editProfile, setEditProfile
     }}>
       {children}
     </GlobalContext.Provider>

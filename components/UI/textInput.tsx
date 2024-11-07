@@ -7,4 +7,5 @@ export const TextInput = ({content, setContent, heading, placeholder, type, requ
           <h2 className={`text-sm text-semibold text-nifty-gray-1 order-first mt-4 peer-focus:font-semibold duration-200 peer-focus:text-slate-400 text-slate-500/80 `}>{heading} {required && <span className="text-red-500 font-semibold ml-1">*</span>}</h2>
       </div>
   )
+
 }
