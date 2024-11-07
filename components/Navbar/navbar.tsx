@@ -11,12 +11,13 @@ import { ConnectModal } from '../Connect/connectModal'
 import { useGlobalContext } from '@/context/MainContext'
 import { ActionButton } from '../UI/actionButton'
 import { useNavbarHooks } from './navbar.hooks'
+import { PostModal } from './postModal'
 
 export const Navbar = () => {
 
     const{user} = useGlobalContext()
     
-    const{loginModal, setLoginModal, post} = useNavbarHooks()
+    const{loginModal, setLoginModal, post, postContent, setPostContent, postModal, setPostModal, postMedia, setPostMedia} = useNavbarHooks()
     return (
     <div className='flex flex-col border-r-[2px] border-slate-400/20 relative min-h-[50vh] md:w-60 pr-2 py-4 h-screen'>
         <div className='flex w-full justify-center items-start'>
@@ -27,7 +28,7 @@ export const Navbar = () => {
             <ol className='flex flex-col gap-2'>
                 <li><Link href="/"><div className='hover:bg-slate-400/10 text-slate-400 hover:text-white pl-4 gap-2 text-lg font-semibold hover:font-extrabold pr-10 rounded-full w-fit flex items-center text-left duration-200 h-10'><CgHomeAlt/>Home</div></Link></li>
                 {user && <li><Link href={`/profile/${user?.userhandle}`}><div className='hover:bg-slate-400/10 text-slate-400 hover:text-white pl-4 gap-2 text-lg font-semibold hover:font-extrabold pr-10 rounded-full w-fit flex items-center text-left duration-200 h-10'><CgProfile/>Profile</div></Link></li>}
-                <ActionButton action='Post' onClick={post} />
+                <ActionButton action='Post' onClick={()=>{setPostModal(true)}} />
             </ol>
         </div>
         <div className='absolute bottom-2 right-2'>
@@ -36,6 +37,10 @@ export const Navbar = () => {
 
         {loginModal && <>
             <ConnectModal setLoginModal={setLoginModal}/>
+        </>}
+
+        {postModal && <>
+            <PostModal post={post} postMedia={postMedia} setPostMedia={setPostMedia} postContent = {postContent} setPostContent={setPostContent} setPostModal={setPostModal} />
         </>}
     </div>
   )

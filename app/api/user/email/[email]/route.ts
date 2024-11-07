@@ -2,41 +2,8 @@ import { connectToDB } from "@/controllers/databaseController";
 import User from "@/schemas/userSchema";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { AuthService } from "@/services/authService";
-
-const s3Client = new S3Client({
-    region: process.env.AWS_S3_REGION,
-    credentials: {
-        accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID as string,
-        secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY as string
-    }
-});
-
-async function uploadPicToS3 (file:Buffer, email:string, type:string) {
-
-    const fileBuffer = file;
-    console.log(fileBuffer);
-    try{
-        if(file){
-            const params = {
-                Bucket: process.env.AWS_S3_BUCKET_NAME,
-                Key: `users/${email}/info/${type}`,
-                Body: fileBuffer,
-                ContentType: "image/png"
-            }
-            const command = new PutObjectCommand(params);
-            await s3Client.send(command);
-        }
-
-        return true;
-    }
-    catch(e){
-        console.error("This is error: ", e);
-        return false
-    }
-    
-}
+import { AwsUploadService } from "@/services/awsUploadService";
 
 export async function GET(req:any){
     try{
@@ -78,12 +45,14 @@ export async function PATCH(req:any){
 
         if(profilePic){
             const profileBuffer = Buffer.from(await profilePic.arrayBuffer());
-            await uploadPicToS3(profileBuffer, email.replace("@","-"), "profilePic");
+            const key = `users/${email.replace("@", "-")}/info/profilePic`
+            await AwsUploadService(profileBuffer, key);
         }
 
         if(banner){
             const bannerBuffer = Buffer.from(await banner.arrayBuffer());
-            await uploadPicToS3(bannerBuffer, email.replace("@", "-"), "banner");
+            const key = `users/${email.replace("@", "-")}/info/banner`
+            await AwsUploadService(bannerBuffer, key);
         }
 
         const profilePicLink = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_S3_REGION}.amazonaws.com/users/${email.replace("@","-")}/info/profilePic`;

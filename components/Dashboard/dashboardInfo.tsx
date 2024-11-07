@@ -32,7 +32,7 @@ export const DashboardInfo = () => {
             </div>
 
             <div className='flex justify-end mt-4 px-4'>
-                <button onClick={()=>{setEditProfile(true)}} className='flex w-32 font-bold gap-2 h-8 items-center justify-center text-sm border-2 border-slate-400 rounded-full'><RiEdit2Fill className=''/> Edit Profile</button>
+                <button onClick={()=>{setEditProfile(true)}} className='flex w-32 hover:bg-slate-200/10 duration-200 hover:-translate-y-1 font-bold gap-2 h-8 items-center justify-center text-sm border-2 border-slate-400 rounded-full'><RiEdit2Fill className=''/> Edit Profile</button>
             </div>
 
             <div className='mt-20 px-8'>

@@ -25,9 +25,9 @@ export const EditProfile = () => {
                 </div>
 
                 <div className='max-h-80 overflow-y-scroll mb-4 '>
-                    <TextInput content={username} heading='New username' placeholder={user?.username as string} setContent={setUsername} required={false} />
-                    <TextInput content={userhandle} heading='New userhandle' placeholder={user?.userhandle as string} setContent={setUserhandle} required={false} />
-                    <AreaInput content={bio} heading='Edit bio' placeholder={user?.bio as string} setContent={setBio} required={false} />
+                    <TextInput limit={30} content={username} heading='New username' placeholder={user?.username as string} setContent={setUsername} required={false} />
+                    <TextInput limit={20} content={userhandle} heading='New userhandle' placeholder={user?.userhandle as string} setContent={setUserhandle} required={false} />
+                    <AreaInput limit={200} content={bio} heading='Edit bio' placeholder={user?.bio as string} setContent={setBio} required={false} />
 
                     <label htmlFor="dropzone-file" className="flex mt-4 flex-col aspect-square items-center justify-center w-40 border-2 border-web-textBoxShine border-dashed rounded-lg cursor-pointer p-2">
                         <div className="flex flex-col items-center aspect-square overflow-hidden justify-center rounded-lg w-full h-full hover:bg-web-textBoxShine">

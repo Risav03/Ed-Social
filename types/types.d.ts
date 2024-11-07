@@ -1,4 +1,5 @@
 type UserType = {
+    _id:string;
     username: string;
     userhandle:string;
     email:string;
@@ -11,6 +12,16 @@ type UserType = {
     following:number;
     searchHistory:Array<string>;
     role:string;
+    createdAt:Date;
+    updatedAt:Date;
+}
+
+type PostType = {
+    _id:string;
+    content:string;
+    media:string;
+    likes:number;
+    comments:number;
     createdAt:Date;
     updatedAt:Date;
 }
