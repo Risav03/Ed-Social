@@ -34,10 +34,16 @@ export async function PATCH(req:any){
         const bio = formData.get('bio');
         const email = await req.nextUrl.pathname.split("/")[4];
 
+        if(bio.length > 200){
+            return NextResponse.json({error:"Bio exceeding length limit"}, {status:406})
+        }
+
+
         const profilePic = formData.get('profilePic');
         const banner = formData.get('banner');
 
         const user = await User.findOne({email:email});
+
 
         if(!user){
             return NextResponse.json({error: "User not found"}, {status:400});

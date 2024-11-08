@@ -1,6 +1,7 @@
 import { Dashboard } from "@/components/Dashboard/dashboard";
 import { Background } from "@/components/UI/background";
 import { Navbar } from "@/components/Navbar/navbar";
+import { SearchBar } from "@/components/Search/searchBar";
 
 export default function Profile() {
     return (
@@ -14,7 +15,7 @@ export default function Profile() {
                     <Dashboard/>
                 </div>  
                 <div className="w-60 border-l-[2px] border-slate-400/20">
-
+                    <SearchBar/>
                 </div>
             </div>
         </div>

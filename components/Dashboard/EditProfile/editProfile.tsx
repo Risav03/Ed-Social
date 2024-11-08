@@ -11,7 +11,7 @@ import Image from 'next/image'
 
 export const EditProfile = () => {
 
-    const { editProfile, setEditProfile, user } = useGlobalContext()
+    const { setEditProfile, user } = useGlobalContext()
     const { username, setUsername, userhandle, setUserhandle, bio, setBio, updateInfo, banner, setBanner, profilePic, setProfilePic } = useEditProfileHooks({ user })
 
     return (

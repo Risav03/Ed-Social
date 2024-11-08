@@ -18,6 +18,10 @@ export async function POST(req:any){
 
         const date = Date.now()
 
+        if(content.length > 200){
+            return NextResponse.json({error:"Content exceeding length limit"}, {status:406})
+        }
+
         console.log(content, media, email, date);
 
         var mediaKey = ""

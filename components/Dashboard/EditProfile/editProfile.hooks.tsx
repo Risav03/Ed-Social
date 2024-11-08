@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
+import { toast } from 'react-toastify';
 
 export const useEditProfileHooks = ({user}:{user:UserType | null}) => {
 
@@ -22,6 +23,10 @@ export const useEditProfileHooks = ({user}:{user:UserType | null}) => {
         formdata.append('username', username);
         formdata.append('userhandle', userhandle);
         formdata.append('bio', bio);
+
+        if(bio.length > 200){
+            toast.error("Bio cannot exceed 200 characters.")
+        }
 
         if(profilePic){
             formdata.append('profilePic', profilePic as File);

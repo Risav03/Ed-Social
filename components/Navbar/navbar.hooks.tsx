@@ -18,6 +18,9 @@ export const useNavbarHooks = () => {
         if(postContent == "" && !postMedia){
             toast.error("Either enter content or add media!")
         }
+        if(postContent.length > 200){
+            toast.error("Content length cannot exceed 200 characters.");
+        }
         try{
             const formdata = new FormData();
             formdata.append('content', postContent);
