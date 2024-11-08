@@ -27,12 +27,20 @@ export async function GET(req: any) {
         }
 
         const user = await User.findOne({ email: session.email });
-        const arr = user.searchHistory;
 
-        const historyArr = await Promise.all(arr.map(async (userId:string) => {
-            const historyUser = await User.findById(userId);
-            return historyUser;
-        }));
+        console.log(user);
+        
+        const arr = user?.searchHistory;
+
+        var historyArr = []
+
+        if(arr && arr.length > 0){
+            historyArr = await Promise.all(arr?.map(async (userId:string) => {
+                const historyUser = await User.findById(userId);
+                return historyUser;
+            }));
+        }
+    
 
         return new NextResponse(JSON.stringify({ history: historyArr, result: slicedResult}), { status: 200 });
     } catch (error) {
