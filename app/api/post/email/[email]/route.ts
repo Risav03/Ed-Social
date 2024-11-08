@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { AwsUploadService } from "@/services/awsUploadService";
 import Post from "@/schemas/postSchema";
+import { getToken } from "next-auth/jwt";
 
 export async function POST(req:any){
     await AuthService.getAuthenticatedUser(req)
@@ -13,7 +14,10 @@ export async function POST(req:any){
         const formData = await req.formData();
         const content = formData.get('content');
         const media = formData.get('media');
-        const email = req.nextUrl.pathname.split("/")[4];
+        const session = await getToken({
+            req,
+            secret: process.env.NEXTAUTH_SECRET
+        });
         const id = formData.get('id')
 
         const date = Date.now()
@@ -22,19 +26,19 @@ export async function POST(req:any){
             return NextResponse.json({error:"Content exceeding length limit"}, {status:406})
         }
 
-        console.log(content, media, email, date);
+        console.log(content, media, session?.email, date);
 
         var mediaKey = ""
 
         if(media){
             const buffer = Buffer.from(await media.arrayBuffer());
-            const key = `users/${email.replace("@","-")}/posts/${date}`
+            const key = `users/${session?.email?.replace("@","-")}/posts/${date}`
             const res = await AwsUploadService(buffer,key);
 
             if(!res){
                 return NextResponse.json({message: "Upload to aws failed"}, {status:406})
             }
-            mediaKey = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_S3_REGION}.amazonaws.com/users/${email.replace("@","-")}/posts/${date}`
+            mediaKey = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_S3_REGION}.amazonaws.com/users/${session?.email?.replace("@","-")}/posts/${date}`
         }
 
 
