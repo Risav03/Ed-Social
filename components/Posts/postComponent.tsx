@@ -17,6 +17,28 @@ export const PostComponent = ({ getPosts, image, user, id, content, userimage, u
       console.log(err);
     }
   }
+
+  const convertUrlsToLinks = (text:string) => {
+    const words = text.split(' ');
+    return words.map((word, index) => {
+      if (word.startsWith('https://')) {
+        return (
+          <React.Fragment key={index}>
+            <a 
+              href={word}
+              className="text-blue-500 hover:text-blue-700 underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {word}
+            </a>
+            {' '}
+          </React.Fragment>
+        );
+      }
+      return word + ' ';
+    });
+  };
   
   return (
     <div className='border-b-[1px] border-slate-400/20 py-6 px-8'>
@@ -36,7 +58,9 @@ export const PostComponent = ({ getPosts, image, user, id, content, userimage, u
       </div>
       <div className='flex flex-col mt-4'>
         {content?.split("\r\n").map((item) => (
-          <h3 className='h-6'>{item}</h3>
+          <h3 className='h-6'>
+          {convertUrlsToLinks(item)}
+        </h3>
         ))}
         {image !== "" && <Image src={image as string} alt='image' width={1920} height={1080} className=' rounded-xl mt-4 border-2 border-slate-400/30' />}
       </div>
