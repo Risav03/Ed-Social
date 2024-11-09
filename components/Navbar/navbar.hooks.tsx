@@ -31,7 +31,7 @@ export const useNavbarHooks = () => {
             
             formdata.append('id', user?._id as string)
 
-            const res = await axios.post("/api/post/email", formdata);
+            const res = await axios.post("/api/post/email/"+session?.user?.email, formdata);
 
             if(res){
                 toast.success("Post created!");
