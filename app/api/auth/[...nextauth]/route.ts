@@ -68,13 +68,11 @@ const isValidEmail = (email: string): boolean => {
   return emailRegex.test(email);
 };
 
-
 const isValidPassword = (password: string): boolean => {
   return password.length >= 8;
 };
 
-
-export const authOptions: NextAuthOptions = {
+const options: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -84,7 +82,6 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials): Promise<AuthUser | null> {
         try {
-
           if (!credentials?.email || !credentials?.password) {
             throw new Error('Missing credentials');
           }
@@ -103,21 +100,16 @@ export const authOptions: NextAuthOptions = {
             email: credentials.email.toLowerCase() 
           }).select('+pwd +salt');
 
-          
           if (!user) {
             throw new Error('Invalid credentials');
           }
-          
+
           const { hash } = await hashPassword(credentials.password, user.salt);
-          
-          console.log(hash);
+
           const isValid = crypto.timingSafeEqual(
             Buffer.from(hash, 'hex'),
             Buffer.from(user.pwd, 'hex')
           );
-
-          console.log(isValid);
-
 
           if (!isValid) {
             throw new Error('Invalid credentials');
@@ -186,25 +178,8 @@ export const authOptions: NextAuthOptions = {
   debug: true,
 };
 
-const handler = NextAuth(authOptions);
+const handler = NextAuth(options);
 
-const authHandler = async (req: Request, res: Response) => {
-  try {
-    // @ts-ignore 
-    return await handler(req, res);
-  } catch (error: any) {
-    console.error('Authentication error:', error);
-    
-    const message = 'Authentication failed'
-
-    return new NextResponse(
-      JSON.stringify({ status: 'error', message }),
-      {
-        status: 401,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
-  }
-};
-
-export { authHandler as GET, authHandler as POST };
+// Export the API route handlers
+export const GET = handler;
+export const POST = handler;
