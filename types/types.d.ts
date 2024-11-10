@@ -6,6 +6,7 @@ type UserType = {
     userhandle:string;
     email:string;
     pwd:string;
+    salt:string;
     profileImage:string;
     website:string;
     banner:string;

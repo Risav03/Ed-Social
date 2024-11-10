@@ -45,7 +45,8 @@ export const PostComponent = ({ getPosts, image, user, id, content, userimage, u
       <div className='flex gap-2 items-center'>
         <div className='flex gap-2'>
           <div className='rounded-full h-10 w-10 overflow-hidden object-contain'>
-            <Image src={userimage as string} alt='profile' width={1080} height={1080} className='w-full h-full object-cover' />
+            {userimage && userimage != "" ? <Image src={userimage as string} alt='profile' width={1080} height={1080} className='w-full h-full object-cover' /> :
+            <div className='w-full h-full bg-slate-400'></div>}
           </div>
           <div>
             <Link href={`/profile/${userhandle}`} className='font-bold hover:underline  text-lg leading-none'>{username}</Link>

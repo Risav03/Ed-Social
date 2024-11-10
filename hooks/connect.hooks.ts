@@ -8,14 +8,25 @@ export const useConnectHook = ({ setLoginModal }: { setLoginModal: Dispatch<SetS
     const [email, setEmail] = useState<string>("");
     const [username, setUsername] = useState<string>("");
     const [pwd, setPwd] = useState<string>("");
+    const [repwd, setRepwd] = useState<string>("");
 
     const [type, setType] = useState<string>("login")
 
     async function register() {
+        if(email == "" || pwd == "" || username == ""){
+            toast.error("Enter valid credentials!");
+            return;
+        }
+
+        if(!repwd){
+            toast.error("Re-enter password to continue");
+            return;
+        }
         try {
-            const res = await axios.post("/api/user/register", { email: email, username: username, pwd: pwd });
-            toast.success("Successfully registered. Please login");
-            setType("login");
+            await axios.post("/api/user/register", { email: email, username: username, pwd: pwd });
+            toast.success("Successfully registered! Redirecting...");
+
+            login()
         }
         catch (err) {
             console.log(err);
@@ -36,6 +47,6 @@ export const useConnectHook = ({ setLoginModal }: { setLoginModal: Dispatch<SetS
     }
 
     return {
-        email, setEmail, username, setUsername, pwd, setPwd, type, setType, login, register
+        email, setEmail, username, setUsername, pwd, setPwd, type, setType, login, register, repwd, setRepwd
     }
 }

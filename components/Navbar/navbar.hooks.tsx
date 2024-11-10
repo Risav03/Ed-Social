@@ -13,6 +13,7 @@ export const useNavbarHooks = () => {
     const[postMedia, setPostMedia] = useState<File|null>();
     const{getPosts, user} = useGlobalContext()
     const{data:session} = useSession()
+    const[loading, setLoading] = useState<boolean>();
 
     async function post(){
         if(postContent == "" && !postMedia){
@@ -22,6 +23,7 @@ export const useNavbarHooks = () => {
             toast.error("Content length cannot exceed 200 characters.");
         }
         try{
+            setLoading(true);
             const formdata = new FormData();
             formdata.append('content', postContent);
 
@@ -45,9 +47,12 @@ export const useNavbarHooks = () => {
         catch(err){
             console.log(err);
         }
+        finally{
+            setLoading(false);
+        }
     }
 
   return {
-    loginModal, setLoginModal, post, postModal, setPostModal, postContent, setPostContent, postMedia, setPostMedia
+    loginModal, setLoginModal, post, postModal, setPostModal, postContent, setPostContent, postMedia, setPostMedia, loading
   }
 }

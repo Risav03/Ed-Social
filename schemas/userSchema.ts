@@ -7,20 +7,27 @@ const UserSchema = new Schema<UserType>({
         default: "",
         required:true
     },
-    email: {
+    email: { 
+        type: String, 
+        required: true, 
+        unique: true,
+        lowercase: true,
+        trim: true
+      },
+      pwd: { 
+        type: String, 
+        required: true, 
+        select: false 
+      },
+      salt: {
         type: String,
-        default: "",
-        required:true
-    },
+        required: true,
+        select: false
+      },
     userhandle: {
         type: String,
         unique: true,
         required: true
-    },
-    pwd: {
-        type: String,
-        default: "",
-        required:true
     },
     profileImage: {
         type: String,

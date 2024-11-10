@@ -1,37 +1,131 @@
-import { NextResponse } from "next/server";
-import crypto from "crypto"
+import { connectToDB } from "@/controllers/databaseController";
 import User from "@/schemas/userSchema";
-import { getServerSession } from "next-auth/next";
+import { NextRequest, NextResponse } from "next/server";
+import {isValidEmail} from "@/services/loginValidators"
+import {isValidPassword} from "@/services/loginValidators"
+import {hashPassword} from  "@/services/loginValidators"
 
-export async function POST(req:any){
-    try{
-        const body = await req.json();
-        const{email, username, pwd} = body;
+interface RegisterRequestBody {
+  email: string;
+  pwd: string;
+  username: string;
+}
 
-        const hmac = crypto.createHmac('sha256', process.env.KEY as string);
-        hmac.update(pwd);
-        const hashedPassword = hmac.digest('hex');
+export async function POST(req: NextRequest) {
+  try {
+    const body: RegisterRequestBody = await req.json();
+    const { email, pwd, username } = body;
 
-        const existingUser = await User.findOne({email: email});
-        if(existingUser){
-            return NextResponse.json({message:"User with same email exists"},{status:405})
+    // Input validation
+    if (!email || !pwd || !username) {
+      return new NextResponse(
+        JSON.stringify({ 
+          status: 'error', 
+          message: 'Missing required fields' 
+        }),
+        { 
+          status: 400,
+          headers: { 'Content-Type': 'application/json' }
         }
+      );
+    }
 
-        const userhandle = Math.round(Math.random()*1000000000)
-
-        const userhandleExists = await User.findOne({userhandle:userhandle});
-        if(userhandleExists){
-            return NextResponse.json({message:"Same userhandle generated"},{status:406})
+    if (!isValidEmail(email)) {
+      return new NextResponse(
+        JSON.stringify({ 
+          status: 'error', 
+          message: 'Invalid email format' 
+        }),
+        { 
+          status: 400,
+          headers: { 'Content-Type': 'application/json' }
         }
-
-        const user = await User.create({
-            email:email, username:username, pwd:hashedPassword, userhandle:userhandle
-        });
-
-        return NextResponse.json({message:user},{status:200});
-
+      );
     }
-    catch(err){
-        return NextResponse.json({message:err},{status:500})
+
+    if (!isValidPassword(pwd)) {
+      return new NextResponse(
+        JSON.stringify({ 
+          status: 'error', 
+          message: 'Password must be at least 8 characters long' 
+        }),
+        { 
+          status: 400,
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
     }
+
+    await connectToDB();
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ 
+      email: email.toLowerCase() 
+    });
+
+    if (existingUser) {
+      return new NextResponse(
+        JSON.stringify({ 
+          status: 'error', 
+          message: 'Email already registered' 
+        }),
+        { 
+          status: 409,
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
+    }
+
+
+    const { hash, salt } = await hashPassword(pwd);
+
+    const userhandle = Math.round(Math.random()*100000000);
+
+    // Create new user
+    const newUser = await User.create({
+      email: email.toLowerCase(),
+      pwd: hash,
+      salt,
+      username,
+      userhandle,
+      role: 'USER',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+
+    const userObject = newUser.toObject();
+    delete userObject.pwd;
+    delete userObject.salt;
+
+    return new NextResponse(
+      JSON.stringify({
+        status: 'success',
+        message: 'User registered successfully',
+        user: {
+          id: userObject._id.toString(),
+          email: userObject.email,
+          username: userObject.username,
+          role: userObject.role
+        }
+      }),
+      {
+        status: 201,
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+
+  } catch (error: any) {
+    console.error('Registration error:', error);
+    
+    return new NextResponse(
+      JSON.stringify({ 
+        status: 'error', 
+        message: 'Registration failed' 
+      }),
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+  }
 }

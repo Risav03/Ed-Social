@@ -12,18 +12,19 @@ import { useGlobalContext } from '@/context/MainContext'
 import { ActionButton } from '../UI/actionButton'
 import { useNavbarHooks } from './navbar.hooks'
 import { PostModal } from './postModal'
+import { Loader } from '../UI/loader'
+import { PlatformLogo } from '../UI/platformLogo'
 
 export const Navbar = () => {
 
     const{user} = useGlobalContext()
     
-    const{loginModal, setLoginModal, post, postContent, setPostContent, postModal, setPostModal, postMedia, setPostMedia} = useNavbarHooks()
+    const{loginModal, setLoginModal, post, postContent, setPostContent, postModal, setPostModal, postMedia, setPostMedia, loading} = useNavbarHooks()
     return (
     <div className='flex flex-col border-r-[2px] border-slate-400/20 relative min-h-[50vh] md:w-60 pr-2 py-4 h-screen'>
-        <div className='flex w-full justify-center items-start'>
-            <Image src={logo} alt='logo' className='w-5 translate-y-[2px]' />
-            <h1 className='text-xl font-bold'>d-Soc</h1>
-        </div>
+        {loading && <Loader/>}
+        <PlatformLogo/>
+
         <div className='mt-10'>
             <ol className='flex flex-col gap-2'>
                 <li><Link href="/"><div className='hover:bg-slate-400/10 text-slate-400 hover:text-white pl-4 gap-2 text-lg font-semibold hover:font-extrabold pr-10 rounded-full w-fit flex items-center text-left duration-200 h-10'><CgHomeAlt/>Home</div></Link></li>
@@ -31,6 +32,7 @@ export const Navbar = () => {
                 <li><ActionButton action='Post' onClick={()=>{setPostModal(true)}} /></li></>}
             </ol>
         </div>
+        
         <div className='absolute bottom-2 right-2'>
             <AccountDisplay setLoginModal={setLoginModal} image={user?.profileImage as string} username={user?.userhandle as string} name={user?.username as string} />
         </div>

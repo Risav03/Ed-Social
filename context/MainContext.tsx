@@ -62,7 +62,7 @@ export const GlobalContextProvider = ({ children } : { children: ReactNode}) => 
             
         }
         catch(err){
-            console.log(err);
+            // console.log(err);
         }
     }
 
@@ -76,7 +76,7 @@ export const GlobalContextProvider = ({ children } : { children: ReactNode}) => 
   async function getUser(){
     try{
       // @ts-ignore
-      const res = await axios.get(`/api/user/email/${session?.email}`);
+      const res = await axios.get(`/api/user/email/${session?.user.email}`);
       console.log(session?.user);
       setUser(res.data.user);
     }

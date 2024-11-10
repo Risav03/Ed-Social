@@ -16,12 +16,14 @@ export const useEditProfileHooks = ({user}:{user:UserType | null}) => {
    const[bio, setBio] = useState<string>("") 
    const[banner, setBanner] = useState<File|null>();
    const[profilePic, setProfilePic] = useState<File|null>();
+   const[loading, setLoading] = useState<boolean>(false);
 
    async function updateInfo(){
     try{
+        setLoading(true);
         const formdata = new FormData();
         formdata.append('username', username);
-        formdata.append('userhandle', userhandle);
+        formdata.append('userhandle', userhandle.toLowerCase());
         formdata.append('bio', bio);
 
         if(bio.length > 200){
@@ -37,19 +39,21 @@ export const useEditProfileHooks = ({user}:{user:UserType | null}) => {
 
         const res = await axios.patch("/api/user/email/"+session?.user?.email, formdata);
 
-        console.log(res);
 
         if(res){
             getUser();
             setEditProfile(false);
 
             if(userhandle != user?.userhandle){
-                router.push("/")
+                router.push("/buffer")
             }
         }
     }
     catch(err){
         console.log(err);
+    }
+    finally{
+        setLoading(false);
     }
    }
 
@@ -63,6 +67,6 @@ export const useEditProfileHooks = ({user}:{user:UserType | null}) => {
 
 
   return {
-    username, setUsername, userhandle, setUserhandle, bio, setBio, updateInfo, banner, setBanner, profilePic, setProfilePic
+    username, setUsername, userhandle, setUserhandle, bio, setBio, updateInfo, banner, setBanner, profilePic, setProfilePic, loading
   }
 }

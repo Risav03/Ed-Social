@@ -7,7 +7,7 @@ import { ActionButton } from '../UI/actionButton';
 
 export const ConnectModal = ({ setLoginModal }: { setLoginModal: Dispatch<SetStateAction<boolean>> }) => {
 
-    const { email, setEmail, username, setUsername, pwd, setPwd, type, setType, register, login } = useConnectHook({setLoginModal})
+    const { email, setEmail, username, setUsername, pwd, setPwd, type, setType, register, login, repwd, setRepwd } = useConnectHook({setLoginModal})
 
     return (
         <div className='w-screen h-screen bg-white/5 backdrop-blur-lg fixed top-0 left-0 z-[50] flex items-center justify-center'>
@@ -38,6 +38,9 @@ export const ConnectModal = ({ setLoginModal }: { setLoginModal: Dispatch<SetSta
                         <TextInput required={true} content={username} heading='Username' placeholder='Set a username' setContent={setUsername} />
                         <TextInput required={true} content={email} heading='Email' placeholder='Enter an email' setContent={setEmail} />
                         <TextInput required={true} content={pwd} heading='Password' placeholder='Enter a password' setContent={setPwd} type='password' />
+                        <TextInput required={true} content={repwd} heading='Re-enter Password' placeholder='Re-enter password' setContent={setRepwd} type='password' />
+
+                        { pwd && pwd !== repwd && <h2 className='text-red-500 text-sm'>Passwords do not match</h2>}
 
                         <h3 className='text-sm my-4'>Already have an account? <span onClick={() => { setType("login") }} className='font-semibold text-slate-400'>Login here!</span></h3>
 
