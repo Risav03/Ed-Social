@@ -12,6 +12,7 @@ export async function GET(req:any){
         const handle = req.nextUrl.pathname.split("/")[3];
 
         const user:UserType | null = await User.findOne({userhandle:handle});
+        
         if(!user){
             return NextResponse.json({error:"User not found"},{status:404})
         }
