@@ -28,8 +28,9 @@ export const useConnectHook = ({ setLoginModal }: { setLoginModal: Dispatch<SetS
 
             login()
         }
-        catch (err) {
+        catch (err:any) {
             console.log(err);
+            toast.error(err?.response?.data?.message);
         }
     }
 

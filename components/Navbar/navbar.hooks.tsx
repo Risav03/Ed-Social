@@ -13,7 +13,9 @@ export const useNavbarHooks = () => {
     const[postMedia, setPostMedia] = useState<File|null>();
     const{getPosts, user} = useGlobalContext()
     const{data:session} = useSession()
-    const[loading, setLoading] = useState<boolean>();
+    const[loading, setLoading] = useState<boolean>(false);
+    const[searchModal, setSearchModal] = useState<boolean>(false);
+
 
     async function post(){
         if(postContent == "" && !postMedia){
@@ -53,6 +55,6 @@ export const useNavbarHooks = () => {
     }
 
   return {
-    loginModal, setLoginModal, post, postModal, setPostModal, postContent, setPostContent, postMedia, setPostMedia, loading
+    loginModal, setLoginModal, post, postModal, setPostModal, postContent, setPostContent, postMedia, setPostMedia, loading, searchModal, setSearchModal
   }
 }

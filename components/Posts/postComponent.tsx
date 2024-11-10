@@ -4,9 +4,11 @@ import Link from 'next/link'
 import React from 'react'
 import { MdDelete } from "react-icons/md";
 import { toast } from 'react-toastify';
+import { usePostHooks } from './post.hooks';
 
 export const PostComponent = ({ getPosts, image, user, id, content, userimage, username, userhandle }: {getPosts:()=>void, image?: string, content?: string, user: UserType, id:string, userimage: string, username: string, userhandle: string }) => {
-  
+
+
   async function deletePost(){
     try{
       await axios.delete("/api/post/id/"+id);
@@ -41,7 +43,7 @@ export const PostComponent = ({ getPosts, image, user, id, content, userimage, u
   };
   
   return (
-    <div className='border-b-[1px] border-slate-400/20 py-6 px-8'>
+    <div className='border-b-[1px] border-slate-400/20 md:py-6 md:px-8 py-3 px-4'>
       <div className='flex gap-2 items-center'>
         <div className='flex gap-2'>
           <div className='rounded-full h-10 w-10 overflow-hidden object-contain'>
@@ -58,11 +60,13 @@ export const PostComponent = ({ getPosts, image, user, id, content, userimage, u
         </div>}
       </div>
       <div className='flex flex-col mt-4'>
+        <div>
         {content?.split("\r\n").map((item) => (
-          <h3 className='h-6'>
+          <h3 className='min-h-6'>
           {convertUrlsToLinks(item)}
         </h3>
         ))}
+        </div>
         {image !== "" && <Image src={image as string} alt='image' width={1920} height={1080} className=' rounded-xl mt-4 border-2 border-slate-400/30' />}
       </div>
     </div>

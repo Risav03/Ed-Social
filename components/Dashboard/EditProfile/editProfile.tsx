@@ -20,14 +20,14 @@ export const EditProfile = () => {
             {loading && <Loader/>}
             <Card className='md:w-[25rem] w-80' >
                 <div className='flex gap-2 items-center text-slate-400'>
-                    <h2 className='text-2xl w-1/2 font-bold'>Edit Profile</h2>
-                    <div className='w-1/2 flex justify-end'>
+                    <h2 className='text-2xl w-2/3 font-bold'>Edit Profile</h2>
+                    <div className='w-1/3 flex justify-end'>
                         <button onClick={() => { setEditProfile(false) }} className='hover:text-red-500 duration-200'><RxCross2 /></button>
                     </div>
                 </div>
 
                 <div className='max-h-80 overflow-y-scroll mb-4 '>
-                    <div className='flex gap-2 items-center'>
+                    <div className='flex max-md:flex-col gap-2 items-center'>
                         <div>
                             <label htmlFor="dropzone-file" className="flex mt-4 flex-col aspect-square items-center justify-center w-40 border-2 border-web-textBoxShine border-dashed border-slate-400 rounded-lg cursor-pointer p-2">
                                 <div className="flex flex-col items-center aspect-square overflow-hidden justify-center rounded-lg w-full h-full hover:bg-web-textBoxShine">
