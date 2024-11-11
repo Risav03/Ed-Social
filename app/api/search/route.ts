@@ -6,7 +6,6 @@ import { NextResponse } from "next/server";
 
 export async function GET(req: any) {
     revalidatePath('/', 'layout');
-
     try {
         await connectToDB();
         const url = new URL(req.url);
