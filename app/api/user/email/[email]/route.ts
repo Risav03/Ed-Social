@@ -6,8 +6,8 @@ import { AuthService } from "@/services/authService";
 import { AwsUploadService } from "@/services/awsUploadService";
 
 export async function GET(req:any){
+    revalidatePath("/","layout");
     try{
-        revalidatePath("/","layout");
         await connectToDB();
 
         const url = req.nextUrl.pathname.split("/")[4];
@@ -38,7 +38,6 @@ export async function PATCH(req:any){
             return NextResponse.json({error:"Bio exceeding length limit"}, {status:406})
         }
 
-
         const profilePic = formData.get('profilePic');
         const banner = formData.get('banner');
 
@@ -67,7 +66,10 @@ export async function PATCH(req:any){
         user.username = username;
         user.userhandle = userhandle;
         user.bio = bio;
+        if(profilePic)
         user.profileImage = profilePicLink;
+
+        if(banner)
         user.banner = bannerLink;
 
         await user.save();

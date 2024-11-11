@@ -26,7 +26,7 @@ export const useConnectHook = ({ setLoginModal }: { setLoginModal: Dispatch<SetS
             await axios.post("/api/user/register", { email: email, username: username, pwd: pwd });
             toast.success("Successfully registered! Redirecting...");
 
-            login()
+            await login()
         }
         catch (err:any) {
             console.log(err);
@@ -36,11 +36,18 @@ export const useConnectHook = ({ setLoginModal }: { setLoginModal: Dispatch<SetS
 
     async function login() {
         try {
-            signIn("credentials", {
+            const res = await signIn("credentials", {
                 email: email,
                 password: pwd,
+                redirect: false,
             });
-            setLoginModal(false);
+
+            // @ts-ignore
+            if (res?.error) {
+                toast.error(res.error);
+            } else {
+                setLoginModal(false);
+            }
         }
         catch (err) {
             console.log(err);

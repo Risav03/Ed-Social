@@ -41,12 +41,12 @@ export const useEditProfileHooks = ({user}:{user:UserType | null}) => {
 
 
         if(res){
-            getUser();
             setEditProfile(false);
-
+            
             if(userhandle != user?.userhandle){
                 router.push("/buffer")
             }
+            getUser();
         }
     }
     catch(err){

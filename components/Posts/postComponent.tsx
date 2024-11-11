@@ -55,7 +55,7 @@ export const PostComponent = ({ getPosts, image, user, id, content, userimage, u
             <div className='w-full h-full bg-slate-400'></div>}
           </div>
           <div>
-            <Link href={`/profile/${userhandle}`} className='font-bold hover:underline  text-lg leading-none'>{username}</Link>
+            <Link href={`/profile/${userhandle}`} className='font-bold hover:underline text-nowrap text-lg leading-none'>{username}</Link>
             <h3 className='text-sm leading-none text-slate-500'>@{userhandle}</h3>
           </div>
         </div>

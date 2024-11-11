@@ -58,7 +58,6 @@ export async function POST(req: NextRequest) {
 
     await connectToDB();
 
-    // Check if user already exists
     const existingUser = await User.findOne({ 
       email: email.toLowerCase() 
     });
