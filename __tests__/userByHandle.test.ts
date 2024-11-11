@@ -1,7 +1,7 @@
 import { GET } from '@/app/api/user/[userhandle]/route'; // Adjust the import path as needed
 import { connectToDB } from "@/lib/db/db";
 import User from "@/schemas/userSchema";
-import { NextResponse } from "next/server";
+
 import { revalidatePath } from "next/cache";
 
 
@@ -15,7 +15,6 @@ describe('GET User Route', () => {
     jest.clearAllMocks();
   });
 
-  // Mock the request object
   const mockRequest = (handle:any) => ({
     nextUrl: {
       pathname: `/api/users/${handle}`

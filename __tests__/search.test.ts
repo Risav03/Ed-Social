@@ -34,7 +34,6 @@ describe('GET User Search API', () => {
     jest.clearAllMocks();
   });
 
-  // Test 1: Missing search query
   it('should return 400 when search query is missing', async () => {
     const req = new Request('http://localhost:3000/api/search');
 

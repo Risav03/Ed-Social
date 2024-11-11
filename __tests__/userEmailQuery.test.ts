@@ -1,10 +1,7 @@
-import { createMocks } from 'node-mocks-http';
 import { GET, PATCH } from '@/app/api/user/email/[email]/route';
-import { connectToDB } from "@/lib/db/db";
 import User from "@/schemas/userSchema";
 import { AuthService } from "@/services/authService";
 import { AwsUploadService } from "@/services/awsUploadService";
-import { NextResponse } from 'next/server';
 
 // Mock the external dependencies
 jest.mock("@/lib/db/db");
