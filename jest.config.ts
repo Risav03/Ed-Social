@@ -13,6 +13,7 @@ const config: Config = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',  // Adjust this path based on your project structure
+    '^@/services/(.*)$': '<rootDir>/services/$1'
   },
   testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/'],
   testEnvironmentOptions: {
