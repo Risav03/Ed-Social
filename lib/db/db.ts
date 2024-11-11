@@ -27,7 +27,11 @@ class DatabaseController {
       }
 
       mongoose.set('strictQuery', true);
-      await mongoose.connect(mongoURI);
+      await mongoose.connect(mongoURI, {
+        maxPoolSize: 10,
+        serverSelectionTimeoutMS: 5000,
+        socketTimeoutMS: 45000,
+      });
 
       this.isConnected = true;
       console.log('Connected to MongoDB');
