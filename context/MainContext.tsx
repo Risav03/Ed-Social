@@ -72,15 +72,20 @@ export const GlobalContextProvider = ({ children } : { children: ReactNode}) => 
         try{
           if(pathname == "/"){
             const res = await axios.get("/api/post"+"?pageIndex="+pageIndex+"&pageSize=10");
-            console.log(res.data.posts)
+
             res.data.posts.map((item:PostType)=>{
               setPosts((prev) => [...prev , item])
             })
             setLastPage(res?.data?.isLastPage);
           }
           else if(pathname.includes("profile")){
-            const res = await axios.get("/api/post/"+pathname.split("/")[2]);
-            setPosts(res.data.posts)
+
+            const res = await axios.get("/api/post/"+pathname.split("/")[2]+"?pageIndex="+pageIndex+"&pageSize=2");
+
+            res.data.posts.map((item:PostType)=>{
+              setPosts((prev) => [...prev , item])
+            })
+            setLastPage(res?.data?.isLastPage);
           }
             
         }

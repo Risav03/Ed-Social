@@ -20,8 +20,6 @@ export async function GET(request: Request) {
       .limit(pageSize)
       .sort({ _id: -1 });
 
-      console.log(posts);
-
     const isLastPage = (pageIndex + 1) * pageSize >= totalPostCount;
 
     return NextResponse.json({ posts, isLastPage }, { status: 200 });
