@@ -2,6 +2,9 @@
 
 Ed-Social is a social media platform aimed at fostering community interactions around educational content, discussions, and resources. Built with Next.js, NextAuth, MongoDB, and AWS S3, it leverages both TypeScript and JavaScript to ensure a scalable and user-friendly experience.
 
+## Deployed Link: 
+[Ed-Social](https://ed-social.vercel.app/)
+
 ## Table of Contents
 
 - [Features](#features)
