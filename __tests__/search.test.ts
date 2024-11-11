@@ -2,8 +2,7 @@ import { GET } from '@/app/api/search/route';
 import User from "@/schemas/userSchema";
 import { getToken } from "next-auth/jwt";
 import { revalidatePath } from 'next/cache';
-import { NextResponse } from "next/server";
-import { connectToDB } from "@/lib/db/db";
+
 
 jest.mock("@/lib/db/db");
 
