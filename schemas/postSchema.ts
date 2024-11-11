@@ -1,3 +1,4 @@
+import { PostType } from '@/types/types';
 import mongoose, { Schema, model, models, trusted } from 'mongoose';
 
 const PostSchema = new Schema<PostType>({

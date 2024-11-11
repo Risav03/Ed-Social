@@ -2,6 +2,7 @@
 import { useGlobalContext } from '@/context/MainContext'
 import React from 'react'
 import { PostComponent } from '../Posts/postComponent'
+import { UserType } from '@/types/types'
 
 export const Timeline = () => {
 

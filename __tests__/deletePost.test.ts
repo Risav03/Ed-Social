@@ -4,6 +4,8 @@ import { AuthService } from '@/services/authService';
 import { NextResponse } from 'next/server';
 
 // Mock dependencies
+jest.mock("@/lib/db/db");
+
 jest.mock('@/schemas/postSchema');
 jest.mock('@/services/authService');
 

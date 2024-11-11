@@ -2,7 +2,9 @@ import { GET } from '@/app/api/search/route';
 import User from "@/schemas/userSchema";
 import { getToken } from "next-auth/jwt";
 import { revalidatePath } from 'next/cache';
-import { NextResponse } from "next/server";
+
+
+jest.mock("@/lib/db/db");
 
 jest.mock('next/cache', () => ({
     revalidatePath: jest.fn(),

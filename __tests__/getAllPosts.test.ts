@@ -1,7 +1,8 @@
 import { GET } from '@/app/api/post/route'; 
 import Post from '@/schemas/postSchema';
 import { revalidatePath } from 'next/cache';
-import { NextResponse } from 'next/server';
+
+jest.mock("@/lib/db/db");
 
 jest.mock('@/schemas/postSchema');
 jest.mock('next/cache', () => ({

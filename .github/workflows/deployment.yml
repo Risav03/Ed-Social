@@ -1,0 +1,36 @@
+name: Node.js CI
+
+on:
+  push:
+    branches: [main, ci/cd]
+  pull_request:
+    branches: [main, ci/cd]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [21.4.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Run CI command
+        
+        run: |
+          npm ci
+          # Add any other environment variables here
+          # and use them in your scripts
+
+      - name: Run the tests
+        run: npm run test
+
+      - name: Build
+        run: npm run build
