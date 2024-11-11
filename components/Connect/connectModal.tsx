@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction } from 'react'
 import { Card } from '../UI/card'
 import { TextInput } from '../UI/textInput'
-import { useConnectHook } from '@/hooks/connect.hooks'
+import { useConnectHook } from '@/lib/hooks/connect.hooks'
 import { RxCross2 } from "react-icons/rx";
 import { ActionButton } from '../UI/actionButton';
 

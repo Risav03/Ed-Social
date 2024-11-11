@@ -1,5 +1,5 @@
 import { GET } from '@/app/api/user/[userhandle]/route'; // Adjust the import path as needed
-import { connectToDB } from "@/controllers/databaseController";
+import { connectToDB } from "@/lib/db/db";
 import User from "@/schemas/userSchema";
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";

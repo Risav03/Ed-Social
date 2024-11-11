@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useDebouncedValue } from '@mantine/hooks';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { UserType } from '@/types/types';
 
 export const useSearchHooks = () => {
 

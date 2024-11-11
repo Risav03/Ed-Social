@@ -1,4 +1,4 @@
-import { connectToDB } from "@/controllers/databaseController";
+import { connectToDB } from "@/lib/db/db";
 import User from "@/schemas/userSchema"
 import jwt from "jsonwebtoken";
 import NextAuth, { DefaultSession, NextAuthOptions } from "next-auth";

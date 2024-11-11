@@ -1,4 +1,4 @@
-import { connectToDB } from "@/controllers/databaseController";
+import { connectToDB } from "@/lib/db/db";
 import Post from "@/schemas/postSchema";
 import User from "@/schemas/userSchema";
 import { revalidatePath } from "next/cache";

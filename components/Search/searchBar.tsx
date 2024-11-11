@@ -1,6 +1,6 @@
 "use client"
 import React, { Dispatch, SetStateAction } from 'react'
-import { useSearchHooks } from './search.hooks'
+import { useSearchHooks } from '../../lib/hooks/search.hooks'
 import { SearchResult } from './searchResult'
 
 export const SearchBar = ({setSearchbar}:{ setSearchbar?: Dispatch<SetStateAction<boolean>> }) => {

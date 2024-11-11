@@ -1,6 +1,6 @@
 import User from "@/schemas/userSchema";
 import { getToken } from "next-auth/jwt";
-import { connectToDB } from "../controllers/databaseController";
+import { connectToDB } from "../lib/db/db";
 
 export class AuthService {
   static async getAuthenticatedUser(req: any) {

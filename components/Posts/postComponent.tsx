@@ -4,7 +4,7 @@ import Link from 'next/link'
 import React from 'react'
 import { MdDelete } from "react-icons/md";
 import { toast } from 'react-toastify';
-import { usePostHooks } from './post.hooks';
+import { usePostHooks } from '../../lib/hooks/post.hooks';
 
 export const PostComponent = ({ getPosts, image, user, id, content, userimage, username, userhandle, dateData }: { dateData:string, getPosts:()=>void, image?: string, content?: string, user: UserType, id:string, userimage: string, username: string, userhandle: string }) => {
 

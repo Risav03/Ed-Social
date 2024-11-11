@@ -1,4 +1,4 @@
-import { connectToDB } from "@/controllers/databaseController";
+import { connectToDB } from "@/lib/db/db";
 import { AuthService } from "@/services/authService";
 import { NextResponse } from "next/server";
 import { AwsUploadService } from "@/services/awsUploadService";

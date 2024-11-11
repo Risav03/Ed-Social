@@ -4,7 +4,7 @@ import Image from 'next/image';
 import React from 'react'
 import { EditProfile } from './EditProfile/editProfile';
 import { RiEdit2Fill } from 'react-icons/ri';
-import { useDashboardHook } from './dashboard.hook';
+import { useDashboardHook } from '../../lib/hooks/dashboard.hooks';
 
 export const DashboardInfo = () => {
 

@@ -1,4 +1,5 @@
 "use client"
+import { UserType } from '@/types/types';
 import axios from 'axios';
 import { usePathname } from 'next/navigation';
 import React, { useEffect, useState } from 'react'

@@ -10,7 +10,7 @@ import { CgProfile } from "react-icons/cg";
 import { ConnectModal } from '../Connect/connectModal'
 import { useGlobalContext } from '@/context/MainContext'
 import { ActionButton } from '../UI/actionButton'
-import { useNavbarHooks } from './navbar.hooks'
+import { useNavbarHooks } from '../../lib/hooks/navbar.hooks'
 import { PostModal } from './postModal'
 import { Loader } from '../UI/loader'
 import { PlatformLogo } from '../UI/platformLogo'

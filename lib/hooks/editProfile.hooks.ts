@@ -1,5 +1,6 @@
 'use client'
 import { useGlobalContext } from '@/context/MainContext';
+import { UserType } from '@/types/types';
 import axios from 'axios';
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation';
@@ -44,7 +45,7 @@ export const useEditProfileHooks = ({user}:{user:UserType | null}) => {
             setEditProfile(false);
             
             if(userhandle != user?.userhandle){
-                router.push("/buffer")
+                router.push("/profile")
             }
             getUser();
         }
