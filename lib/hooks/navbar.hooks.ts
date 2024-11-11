@@ -11,7 +11,7 @@ export const useNavbarHooks = () => {
     const[postModal, setPostModal] = useState<boolean>(false);
     const[postContent, setPostContent] = useState<string>("");
     const[postMedia, setPostMedia] = useState<File|null>();
-    const{getPosts, user} = useGlobalContext()
+    const{getPosts, user, setPosts} = useGlobalContext()
     const{data:session} = useSession()
     const[loading, setLoading] = useState<boolean>(false);
     const[searchModal, setSearchModal] = useState<boolean>(false);
@@ -39,6 +39,7 @@ export const useNavbarHooks = () => {
 
             if(res){
                 toast.success("Post created!");
+                setPosts([]);
                 getPosts();
                 setPostModal(false);
                 setPostContent("");

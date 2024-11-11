@@ -1,12 +1,12 @@
-import { UserType } from '@/types/types';
+import { PostType, UserType } from '@/types/types';
 import axios from 'axios';
 import Image from 'next/image'
 import Link from 'next/link'
-import React from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 import { MdDelete } from "react-icons/md";
 import { toast } from 'react-toastify';
 
-export const PostComponent = ({ getPosts, image, user, id, content, userimage, username, userhandle, dateData }: { dateData:string, getPosts:()=>void, image?: string, content?: string, user: UserType, id:string, userimage: string, username: string, userhandle: string }) => {
+export const PostComponent = ({ getPosts, image, user, id, content, userimage, username, userhandle, dateData, setPosts }: { setPosts:Dispatch<SetStateAction<PostType[]>>, dateData:string, getPosts:()=>void, image?: string, content?: string, user: UserType, id:string, userimage: string, username: string, userhandle: string }) => {
 
   function returnDate(input:string){
     const date = new Date(String(input));
@@ -16,6 +16,7 @@ export const PostComponent = ({ getPosts, image, user, id, content, userimage, u
   async function deletePost(){
     try{
       await axios.delete("/api/post/id/"+id);
+      setPosts([])
       toast.success("Post deleted");
       getPosts();
     }

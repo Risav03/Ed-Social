@@ -1,130 +1,116 @@
-import { GET } from '@/app/api/post/route'; 
-import Post from '@/schemas/postSchema';
-import { revalidatePath } from 'next/cache';
+import { GET } from '@/app/api/post/route';
+import { connectToDB } from "@/lib/db/db";
+import Post from "@/schemas/postSchema";
+import { revalidatePath } from "next/cache";
 
 jest.mock("@/lib/db/db");
+jest.mock("next/cache");
+jest.mock("@/schemas/postSchema");
 
-jest.mock('@/schemas/postSchema');
-jest.mock('next/cache', () => ({
-    revalidatePath: jest.fn(),
-}));
+type MockPost = {
+  id: number;
+  title: string;
+  createdBy?: any;
+};
 
-describe('GET Posts Route', () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-    });
+describe('GET Posts API Endpoint', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
-    it('should return posts in reverse order when successful', async () => {
+  it('should return posts with default pagination', async () => {
+    const mockPosts: MockPost[] = [
+      { id: 1, title: 'Post 1' },
+      { id: 2, title: 'Post 2' }
+    ];
 
-        const mockPosts = [
-            {
-                _id: '1',
-                content: 'First post',
-                createdBy: {
-                    _id: 'user1',
-                    name: 'John Doe',
-                    email: 'john@example.com'
-                },
-                createdAt: new Date('2024-01-01')
-            },
-            {
-                _id: '2',
-                content: 'Second post',
-                createdBy: {
-                    _id: 'user2',
-                    name: 'Jane Doe',
-                    email: 'jane@example.com'
-                },
-                createdAt: new Date('2024-01-02')
-            }
-        ];
+    const countSpy = jest.spyOn(Post, 'countDocuments').mockImplementation(() => 
+      Promise.resolve(2) as any
+    );
 
-        const mockPopulate = jest.fn().mockResolvedValue(mockPosts);
-        (Post.find as jest.Mock).mockReturnValue({
-            populate: mockPopulate
-        });
+    const findSpy = jest.spyOn(Post, 'find').mockImplementation(() => ({
+      populate: jest.fn().mockReturnThis(),
+      skip: jest.fn().mockReturnThis(),
+      limit: jest.fn().mockReturnThis(),
+      sort: jest.fn().mockResolvedValue(mockPosts)
+    }) as any);
 
-        const response = await GET({});
-        const data = await response.json();
+    const request = new Request('http://localhost:3000/api/posts');
+    const response = await GET(request);
+    const data = await response.json();
 
-        expect(response.status).toBe(200);
-        expect(data.posts).toEqual(mockPosts.reverse());
-        expect(Post.find).toHaveBeenCalled();
-        expect(mockPopulate).toHaveBeenCalledWith('createdBy');
-        expect(revalidatePath).toHaveBeenCalledWith('/', 'layout');
-    });
+    expect(response.status).toBe(200);
+    expect(data.posts).toEqual(mockPosts);
+    expect(data.isLastPage).toBe(true);
+    expect(findSpy).toHaveBeenCalled();
+    expect(countSpy).toHaveBeenCalled();
+    expect(revalidatePath).toHaveBeenCalledWith('/', 'layout');
+  });
 
-    it('should return empty array when no posts exist', async () => {
+  it('should handle custom pagination parameters', async () => {
+    const mockPosts: MockPost[] = Array.from({ length: 5 }, (_, i) => ({ 
+      id: i + 1, 
+      title: `Post ${i + 1}` 
+    }));
+    const totalPosts = 15;
 
-        const mockPopulate = jest.fn().mockResolvedValue([]);
-        (Post.find as jest.Mock).mockReturnValue({
-            populate: mockPopulate
-        });
+    const countSpy = jest.spyOn(Post, 'countDocuments').mockImplementation(() => 
+      Promise.resolve(totalPosts) as any
+    );
 
-        const response = await GET({});
-        const data = await response.json();
+    const chainMock = {
+      populate: jest.fn().mockReturnThis(),
+      skip: jest.fn().mockReturnThis(),
+      limit: jest.fn().mockReturnThis(),
+      sort: jest.fn().mockResolvedValue(mockPosts)
+    };
 
-        expect(response.status).toBe(200);
-        expect(data.posts).toEqual([]);
-        expect(Post.find).toHaveBeenCalled();
-        expect(mockPopulate).toHaveBeenCalledWith('createdBy');
-        expect(revalidatePath).toHaveBeenCalledWith('/', 'layout');
-    });
+    const findSpy = jest.spyOn(Post, 'find').mockImplementation(() => chainMock as any);
 
-    it('should handle database error properly', async () => {
-        const mockError = new Error('Database connection failed');
-        const mockPopulate = jest.fn().mockRejectedValue(mockError);
-        (Post.find as jest.Mock).mockReturnValue({
-            populate: mockPopulate
-        });
+    const request = new Request('http://localhost:3000/api/posts?pageSize=5&pageIndex=1');
+    const response = await GET(request);
+    const data = await response.json();
 
-        const response = await GET({});
-        const data = await response.json();
+    expect(response.status).toBe(200);
+    expect(data.posts).toEqual(mockPosts);
+    expect(data.isLastPage).toBe(false);
+    expect(chainMock.skip).toHaveBeenCalledWith(5);
+    expect(chainMock.limit).toHaveBeenCalledWith(5);
+  });
 
+  it('should handle empty results', async () => {
+    const countSpy = jest.spyOn(Post, 'countDocuments').mockImplementation(() => 
+      Promise.resolve(0) as any
+    );
 
-        expect(response.status).toBe(500);
-        expect(data.error).toBeDefined();
-        expect(revalidatePath).toHaveBeenCalledWith('/', 'layout');
-    });
+    const chainMock = {
+      populate: jest.fn().mockReturnThis(),
+      skip: jest.fn().mockReturnThis(),
+      limit: jest.fn().mockReturnThis(),
+      sort: jest.fn().mockResolvedValue([])
+    };
 
-    it('should populate createdBy field correctly', async () => {
+    const findSpy = jest.spyOn(Post, 'find').mockImplementation(() => chainMock as any);
 
-        const mockPost = {
-            _id: '1',
-            content: 'Test post',
-            createdBy: {
-                _id: 'user1',
-                name: 'John Doe',
-                email: 'john@example.com',
-                profileImage: 'profile.jpg'
-            },
-            createdAt: new Date('2024-01-01')
-        };
+    const request = new Request('http://localhost:3000/api/posts');
+    const response = await GET(request);
+    const data = await response.json();
 
-        const mockPopulate = jest.fn().mockResolvedValue([mockPost]);
-        (Post.find as jest.Mock).mockReturnValue({
-            populate: mockPopulate
-        });
+    expect(response.status).toBe(200);
+    expect(data.posts).toEqual([]);
+    expect(data.isLastPage).toBe(true);
+  });
 
-        const response = await GET({});
-        const data = await response.json();
+  it('should handle database connection errors', async () => {
+    const error = new Error('Database connection failed');
+    (connectToDB as jest.Mock).mockRejectedValue(error);
 
-        expect(response.status).toBe(200);
-        expect(data.posts[0].createdBy).toEqual(mockPost.createdBy);
-        expect(mockPopulate).toHaveBeenCalledWith('createdBy');
-    });
+    const request = new Request('http://localhost:3000/api/posts');
+    const response = await GET(request);
+    const data = await response.json();
 
-    it('should call revalidatePath before database operation', async () => {
-        const mockPopulate = jest.fn().mockResolvedValue([]);
-        (Post.find as jest.Mock).mockReturnValue({
-            populate: mockPopulate
-        });
+    expect(response.status).toBe(500);
+    expect(data.error).toBeDefined();
+  });
 
-        await GET({});
-
-        expect(revalidatePath).toHaveBeenCalledWith('/', 'layout');
-        const revalidateCallOrder = (revalidatePath as jest.Mock).mock.invocationCallOrder[0];
-        const findCallOrder = (Post.find as jest.Mock).mock.invocationCallOrder[0];
-        expect(revalidateCallOrder).toBeLessThan(findCallOrder);
-    });
 });

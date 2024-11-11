@@ -7,7 +7,7 @@ import { RiLoader5Fill } from 'react-icons/ri'
 
 export const Timeline = () => {
 
-    const{posts, user, getPosts, postsLoading, setPageIndex, lastPage} = useGlobalContext()
+    const{posts, user, getPosts, postsLoading, setPageIndex, lastPage, setPosts} = useGlobalContext()
 
   return (
     <div className='max-md:w-screen'>
@@ -18,7 +18,7 @@ export const Timeline = () => {
         {posts && posts?.length > 0 ? <>
         {posts?.map((item)=>(
           <>
-          <PostComponent dateData={String(item?.createdAt)} getPosts={getPosts} id={item?._id as string} user={user as UserType} image={item?.media} userhandle={item?.createdBy?.userhandle as string} userimage={item?.createdBy?.profileImage as string} username={item?.createdBy?.username as string} content={item?.content}  />
+          <PostComponent setPosts={setPosts} dateData={String(item?.createdAt)} getPosts={getPosts} id={item?._id as string} user={user as UserType} image={item?.media} userhandle={item?.createdBy?.userhandle as string} userimage={item?.createdBy?.profileImage as string} username={item?.createdBy?.username as string} content={item?.content}  />
           </>
         ))}
       </>: <h3 className='w-full h-40 flex items-center justify-center border-b-[1px] border-slate-400/20 text-xl font-bold'>

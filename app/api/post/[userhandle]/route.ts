@@ -10,12 +10,14 @@ export async function GET(request: Request) {
     revalidatePath("/", "layout");
     await connectToDB();
 
-    const { searchParams } = new URL(request.url);
+    const url = new URL(request.url);
+    const { searchParams } = url;
     const pageSize = parseInt(searchParams.get('pageSize') || '10');
     const pageIndex = parseInt(searchParams.get('pageIndex') || '0');
-    const handle = request.url.split('/')[5].split("?")[0];
-
-    console.log(handle);
+    
+    // Extract userhandle from URL path
+    const urlParts = url.pathname.split('/');
+    const handle = urlParts[urlParts.length - 1];
 
     const user: UserType | null = await User.findOne({ userhandle: handle });
 
@@ -33,7 +35,8 @@ export async function GET(request: Request) {
     const isLastPage = (pageIndex + 1) * pageSize >= totalPostCount;
 
     return NextResponse.json({ posts, isLastPage }, { status: 200 });
-  } catch (err:any) {
-    return NextResponse.json({ error: err }, { status: 500 });
+  } catch (err: any) {
+    console.error('Error in GET:', err);
+    return NextResponse.json({ error: err.message || 'Internal Server Error' }, { status: 500 });
   }
 }

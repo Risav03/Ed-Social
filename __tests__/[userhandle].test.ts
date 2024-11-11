@@ -1,115 +1,140 @@
-import { GET } from '@/app/api/post/[userhandle]/route'
-import Post from "@/schemas/postSchema"
-import User from "@/schemas/userSchema"
-import { NextResponse } from 'next/server'
+import { GET } from '@/app/api/post/[userhandle]/route';
+import { connectToDB } from "@/lib/db/db";
+import Post from "@/schemas/postSchema";
+import User from "@/schemas/userSchema";
+import { revalidatePath } from "next/cache";
+import { UserType } from "@/types/types";
+import mongoose from 'mongoose';
 
-jest.mock('next/server', () => {
-  return {
-    NextResponse: {
-      json: jest.fn().mockImplementation((data, options) => {
-        return {
-          status: options?.status || 200,
-          json: async () => data,
-        }
-      }),
-    },
-  }
-})
+// Mock the dependencies
+jest.mock("@/lib/db/db", () => ({
+  connectToDB: jest.fn().mockResolvedValue(undefined)
+}));
+jest.mock("@/schemas/postSchema");
+jest.mock("@/schemas/userSchema");
+jest.mock("next/cache", () => ({
+  revalidatePath: jest.fn()
+}));
 
-jest.mock('@/lib/db/db', () => ({
-  connectToDB: jest.fn(),
-}))
+describe('GET User Posts API Endpoint', () => {
+  // Mock user data
+  const mockUser: Partial<UserType> = {
+    _id: '507f1f77bcf86cd799439011',
+    userhandle: 'testuser',
+    email: 'test@example.com',
+  };
 
-jest.mock('@/schemas/userSchema', () => ({
-  findOne: jest.fn(),
-}))
-
-jest.mock('@/schemas/postSchema', () => ({
-  find: jest.fn().mockReturnThis(),
-  populate: jest.fn(),
-}))
-
-jest.mock('next/cache', () => ({
-  revalidatePath: jest.fn(),
-}))
-
-describe('GET /api/post/[userhandle]', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
+    // Set up default successful DB connection
+    (connectToDB as jest.Mock).mockResolvedValue(undefined);
+  });
 
-    jest.clearAllMocks()
-  })
-
-  it('should return posts for a valid user', async () => {
-
-    const mockUser = {
-      _id: 'user123',
-      userhandle: 'testuser',
-    }
-
+  it('should return user posts with default pagination', async () => {
     const mockPosts = [
-      { _id: 'post1', content: 'Test post 1', createdBy: mockUser },
-      { _id: 'post2', content: 'Test post 2', createdBy: mockUser },
-    ]
+      {
+        _id: new mongoose.Types.ObjectId(),
+        content: 'Test post 1',
+        createdBy: mockUser,
+      },
+      {
+        _id: new mongoose.Types.ObjectId(),
+        content: 'Test post 2',
+        createdBy: mockUser,
+      }
+    ];
 
+    jest.spyOn(User, 'findOne').mockResolvedValue(mockUser);
+    jest.spyOn(Post, 'countDocuments').mockResolvedValue(2);
+    const chainMock = {
+      populate: jest.fn().mockReturnThis(),
+      skip: jest.fn().mockReturnThis(),
+      limit: jest.fn().mockReturnThis(),
+      sort: jest.fn().mockResolvedValue(mockPosts)
+    };
+    jest.spyOn(Post, 'find').mockReturnValue(chainMock as any);
 
-    const mockRequest = {
-      nextUrl: new URL('http://localhost:3000/api/post/testuser'),
-    }
+    const request = new Request('http://localhost:3000/api/post/testuser');
+    const response = await GET(request);
+    const data = await response.json();
 
-    ;(User.findOne as jest.Mock).mockResolvedValue(mockUser)
-    ;(Post.find as jest.Mock).mockReturnThis()
-    ;(Post.populate as jest.Mock).mockResolvedValue(mockPosts)
+    expect(response.status).toBe(200);
+    expect(data.posts).toEqual(mockPosts);
+    expect(data.isLastPage).toBe(true);
+    expect(User.findOne).toHaveBeenCalledWith({ userhandle: 'testuser' });
+    expect(Post.find).toHaveBeenCalledWith({ createdBy: mockUser._id });
+  });
 
+  it('should handle non-existent user', async () => {
+    jest.spyOn(User, 'findOne').mockResolvedValue(null);
 
-    const response = await GET(mockRequest as any)
-    const data = await response.json()
+    const request = new Request('http://localhost:3000/api/post/nonexistentuser');
+    const response = await GET(request);
+    const data = await response.json();
 
-    expect(User.findOne).toHaveBeenCalledWith({ userhandle: 'testuser' })
-    expect(Post.find).toHaveBeenCalledWith({ createdBy: mockUser._id })
-    expect(Post.populate).toHaveBeenCalledWith('createdBy')
-    expect(response.status).toBe(200)
-    expect(data.posts).toEqual(mockPosts.reverse())
-    expect(NextResponse.json).toHaveBeenCalledWith(
-      { posts: mockPosts.reverse() },
-      { status: 200 }
-    )
-  })
+    expect(response.status).toBe(404);
+    expect(data.error).toBe('User not found');
+  });
 
-  it('should return 404 for non-existent user', async () => {
-    const mockRequest = {
-      nextUrl: new URL('http://localhost:3000/api/post/nonexistentuser'),
-    }
+  it('should handle custom pagination parameters', async () => {
+    const mockPosts = Array.from({ length: 5 }, (_, i) => ({
+      _id: new mongoose.Types.ObjectId(),
+      content: `Test post ${i + 1}`,
+      createdBy: mockUser,
+    }));
 
-    ;(User.findOne as jest.Mock).mockResolvedValue(null)
+    jest.spyOn(User, 'findOne').mockResolvedValue(mockUser);
+    jest.spyOn(Post, 'countDocuments').mockResolvedValue(15);
+    const chainMock = {
+      populate: jest.fn().mockReturnThis(),
+      skip: jest.fn().mockReturnThis(),
+      limit: jest.fn().mockReturnThis(),
+      sort: jest.fn().mockResolvedValue(mockPosts)
+    };
+    jest.spyOn(Post, 'find').mockReturnValue(chainMock as any);
 
-    const response = await GET(mockRequest as any)
-    const data = await response.json()
+    const request = new Request('http://localhost:3000/api/post/testuser?pageSize=5&pageIndex=1');
+    const response = await GET(request);
+    const data = await response.json();
 
-    expect(User.findOne).toHaveBeenCalledWith({ userhandle: 'nonexistentuser' })
-    expect(response.status).toBe(404)
-    expect(data.error).toBe('User not found')
-    expect(NextResponse.json).toHaveBeenCalledWith(
-      { error: 'User not found' },
-      { status: 404 }
-    )
-  })
+    expect(response.status).toBe(200);
+    expect(data.posts).toEqual(mockPosts);
+    expect(data.isLastPage).toBe(false);
+    expect(chainMock.skip).toHaveBeenCalledWith(5);
+    expect(chainMock.limit).toHaveBeenCalledWith(5);
+  });
 
-  it('should handle database errors', async () => {
-    const mockRequest = {
-      nextUrl: new URL('http://localhost:3000/api/post/testuser'),
-    }
+  it('should handle database connection errors', async () => {
+    const error = new Error('Database connection failed');
+    (connectToDB as jest.Mock).mockRejectedValue(error);
 
-    const mockError = new Error('Database connection failed');
-    (User.findOne as jest.Mock).mockRejectedValue(mockError)
+    const request = new Request('http://localhost:3000/api/post/testuser');
+    const response = await GET(request);
+    const data = await response.json();
 
-    const response = await GET(mockRequest as any)
-    const data = await response.json()
+    expect(response.status).toBe(500);
+    expect(data.error).toBe('Database connection failed');
+  });
 
-    expect(response.status).toBe(500)
-    expect(data.error).toBeDefined()
-    expect(NextResponse.json).toHaveBeenCalledWith(
-      { error: mockError },
-      { status: 500 }
-    )
-  })
-})
+  it('should handle empty results', async () => {
+    jest.spyOn(User, 'findOne').mockResolvedValue(mockUser);
+    jest.spyOn(Post, 'countDocuments').mockResolvedValue(0);
+    const chainMock = {
+      populate: jest.fn().mockReturnThis(),
+      skip: jest.fn().mockReturnThis(),
+      limit: jest.fn().mockReturnThis(),
+      sort: jest.fn().mockResolvedValue([])
+    };
+    jest.spyOn(Post, 'find').mockReturnValue(chainMock as any);
+
+    const request = new Request('http://localhost:3000/api/post/testuser');
+    const response = await GET(request);
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(data.posts).toEqual([]);
+    expect(data.isLastPage).toBe(true);
+  });
+
+  
+});

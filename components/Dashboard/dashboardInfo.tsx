@@ -16,14 +16,14 @@ export const DashboardInfo = () => {
             <div className='relative'>
                 {/* BANNER */}
                 <div className='md:h-52 h-32 w-full overflow-hidden'>
-                    {profileUser?.banner && profileUser?.banner != "" ? <Image width={1500} height={500} src={profileUser?.banner as string } alt='banner' className='w-full h-full object-cover' /> :
+                    {profileUser?.banner && profileUser?.banner != "" ? <Image width={1500} height={500} src={profileUser?.banner as string + "?v=" + Date.now() } alt='banner' className='w-full h-full object-cover' /> :
                         <div className='w-full max-md:w-screen h-full bg-slate-500'></div>}
                 </div>
 
                 {/* Image, username, handle */}
                 <div className='flex max-md:flex-col gap-2 md:ml-8 ml-2 absolute max-md:top-24 top-40 '>
                     <div className='overflow-hidden object-cover md:w-32 md:h-32 w-20 h-20'>
-                        {profileUser?.profileImage && profileUser.profileImage != "" ? <Image width={1080} height={1080} src={profileUser?.profileImage as string } alt="dp" className='w-full h-full border-4 border-black object-cover rounded-full' /> :
+                        {profileUser?.profileImage && profileUser.profileImage != "" ? <Image width={1080} height={1080} src={profileUser?.profileImage as string + "?v=" + Date.now() } alt="dp" className='w-full h-full border-4 border-black object-cover rounded-full' /> :
                             <div className='md:w-32 md:h-32 w-20 h-20 border-4 border-black rounded-full bg-slate-500'></div>}
                     </div>
                     <div className='md:mt-[3.5rem]'>

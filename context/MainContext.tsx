@@ -80,7 +80,7 @@ export const GlobalContextProvider = ({ children } : { children: ReactNode}) => 
           }
           else if(pathname.includes("profile")){
 
-            const res = await axios.get("/api/post/"+pathname.split("/")[2]+"?pageIndex="+pageIndex+"&pageSize=2");
+            const res = await axios.get("/api/post/"+pathname.split("/")[2]+"?pageIndex="+pageIndex+"&pageSize=10");
 
             res.data.posts.map((item:PostType)=>{
               setPosts((prev) => [...prev , item])
