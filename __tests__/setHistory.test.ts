@@ -6,7 +6,7 @@ import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 
 // Mock dependencies
-jest.mock("@/controllers/databaseController");
+jest.mock("@/lib/db/db");
 jest.mock("@/schemas/userSchema");
 jest.mock("@/services/authService");
 jest.mock("next-auth/jwt");

@@ -7,7 +7,7 @@ import { AwsUploadService } from "@/services/awsUploadService";
 import { NextResponse } from 'next/server';
 
 // Mock the external dependencies
-jest.mock("@/controllers/databaseController");
+jest.mock("@/lib/db/db");
 jest.mock("@/schemas/userSchema");
 jest.mock("@/services/authService");
 jest.mock("@/services/awsUploadService");

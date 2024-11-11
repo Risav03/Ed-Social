@@ -6,6 +6,7 @@ import { JWT } from "next-auth/jwt";
 import crypto from "crypto";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { NextResponse } from "next/server";
+import { UserType } from "@/types/types";
 
 interface HashedPassword {
   hash: string;

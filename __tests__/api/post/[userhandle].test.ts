@@ -19,7 +19,7 @@ jest.mock('next/server', () => {
 })
 
 // Mock other dependencies
-jest.mock('@/controllers/databaseController', () => ({
+jest.mock('@/lib/db/db', () => ({
   connectToDB: jest.fn(),
 }))
 

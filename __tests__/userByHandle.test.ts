@@ -5,7 +5,8 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 
 
-jest.mock("@/controllers/databaseController");
+jest.mock("@/lib/db/db");
+
 jest.mock("@/schemas/userSchema");
 jest.mock("next/cache");
 

@@ -1,6 +1,7 @@
 import { connectToDB } from "@/lib/db/db";
 import Post from "@/schemas/postSchema";
 import User from "@/schemas/userSchema";
+import { UserType } from "@/types/types";
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
