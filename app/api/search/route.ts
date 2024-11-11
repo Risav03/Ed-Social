@@ -1,16 +1,19 @@
 import { connectToDB } from "@/controllers/databaseController";
 import User from "@/schemas/userSchema";
 import { getToken } from "next-auth/jwt";
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
 export async function GET(req: any) {
+    revalidatePath('/', 'layout');
+
     try {
         await connectToDB();
         const url = new URL(req.url);
         const searchString = url.searchParams.get('query');
 
         if (!searchString) {
-            return new NextResponse(JSON.stringify({ error: "Search query is required" }), { status: 400 });
+            return NextResponse.json({ error: "Search query is required" }, { status: 400 });
         }
 
         const result = await User.find({ username: { $regex: searchString, $options: 'i' } });
@@ -23,12 +26,10 @@ export async function GET(req: any) {
         });
     
         if (!session) {
-            return new NextResponse(JSON.stringify({ history: null, result: slicedResult}), { status: 200 });
+            return NextResponse.json({ history: null, result: slicedResult}, { status: 200 });
         }
 
         const user = await User.findOne({ email: session.email });
-
-        console.log(user);
         
         const arr = user?.searchHistory;
 
@@ -41,10 +42,9 @@ export async function GET(req: any) {
             }));
         }
     
-
-        return new NextResponse(JSON.stringify({ history: historyArr, result: slicedResult}), { status: 200 });
+        return NextResponse.json({ history: historyArr, result: slicedResult}, { status: 200 });
     } catch (error) {
         console.error("Error in GET request:", error);
-        return new NextResponse(JSON.stringify({ error: "Internal Server Error" }), { status: 500 });
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
