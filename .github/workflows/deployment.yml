@@ -24,7 +24,7 @@ jobs:
 
       - name: Run CI command
         env:
-          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          MONGODB_URI: ${{ secrets.MONGO_URI }}
         run: |
           npm ci
           # Add any other environment variables here
