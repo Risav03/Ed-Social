@@ -72,7 +72,7 @@ const isValidPassword = (password: string): boolean => {
   return password.length >= 8;
 };
 
-export const options: NextAuthOptions = {
+const options: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: 'Credentials',
