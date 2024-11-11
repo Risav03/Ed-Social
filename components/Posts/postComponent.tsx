@@ -1,10 +1,10 @@
+import { UserType } from '@/types/types';
 import axios from 'axios';
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import { MdDelete } from "react-icons/md";
 import { toast } from 'react-toastify';
-import { usePostHooks } from '../../lib/hooks/post.hooks';
 
 export const PostComponent = ({ getPosts, image, user, id, content, userimage, username, userhandle, dateData }: { dateData:string, getPosts:()=>void, image?: string, content?: string, user: UserType, id:string, userimage: string, username: string, userhandle: string }) => {
 
@@ -20,7 +20,7 @@ export const PostComponent = ({ getPosts, image, user, id, content, userimage, u
       getPosts();
     }
     catch(err){
-      console.log(err);
+      console.error(err);
     }
   }
 

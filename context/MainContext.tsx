@@ -1,6 +1,7 @@
 "use client";
 
 import { EditProfile } from "@/components/Dashboard/EditProfile/editProfile";
+import { PostType, UserType } from "@/types/types";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
@@ -62,7 +63,7 @@ export const GlobalContextProvider = ({ children } : { children: ReactNode}) => 
             
         }
         catch(err){
-            // console.log(err);
+            console.error(err);
         }
     }
 

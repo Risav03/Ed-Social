@@ -24,7 +24,7 @@ export const useSearchHooks = () => {
             setHistory(res.data.history);
         }
         catch(err){
-            console.log(err);
+            console.error(err);
         }
     }
 
@@ -34,7 +34,7 @@ export const useSearchHooks = () => {
             console.log(res);
         }
         catch(err){
-            console.log(err);
+            console.error(err);
         }
     }
 

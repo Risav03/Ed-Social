@@ -16,7 +16,7 @@ export const useDashboardHook = () => {
             setProfileUser(res.data.user);
         }
         catch(err){
-            console.log(err);
+            console.error(err);
         }
     }
 
