@@ -11,7 +11,6 @@ export async function GET(req:any){
         await connectToDB();
 
         const url = req.nextUrl.pathname.split("/")[4];
-        console.log(url);
         const user = await User.findOne({email:url})
 
         if(user){
@@ -78,6 +77,6 @@ export async function PATCH(req:any){
 
     }
     catch(err){
-        console.log(err);
+        return NextResponse.json({error:err},{status:500});
     }
 }

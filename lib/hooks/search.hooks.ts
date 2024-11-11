@@ -30,8 +30,7 @@ export const useSearchHooks = () => {
 
     async function setHistoryData(userId:string){
         try{
-            const res = await axios.post("/api/search/setSearchHistory",{search:userId});
-            console.log(res);
+            await axios.post("/api/search/setSearchHistory",{search:userId});
         }
         catch(err){
             console.error(err);

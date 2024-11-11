@@ -29,7 +29,7 @@ export const useConnectHook = ({ setLoginModal }: { setLoginModal: Dispatch<SetS
             await login()
         }
         catch (err:any) {
-            console.log(err);
+            console.error(err);
             toast.error(err?.response?.data?.message);
         }
     }
@@ -50,7 +50,7 @@ export const useConnectHook = ({ setLoginModal }: { setLoginModal: Dispatch<SetS
             }
         }
         catch (err) {
-            console.log(err);
+            console.error(err);
         }
     }
 

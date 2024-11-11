@@ -16,8 +16,6 @@ export async function POST(req:any){
             secret: process.env.NEXTAUTH_SECRET
         });
 
-        console.log(session?.email);
-
         const user = await User.findOne({email: session?.email});
 
         if(!user){
