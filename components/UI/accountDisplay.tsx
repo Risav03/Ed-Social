@@ -15,7 +15,8 @@ export const AccountDisplay = ({image, username, name, setLoginModal}:PropTypes)
     if(username)
     return (
         <div className='flex items-center gap-2 w-full max-md:justify-center rounded-full md:h-16 md:w-56 bg-slate-900 md:p-2'>
-            <button onClick={()=>{signOut({ callbackUrl: '/' })}}>
+            <button className='relative flex items-center justify-center' onClick={()=>{signOut({ callbackUrl: '/' })}}>
+                <div className='absolute text-xl md:hidden'><IoIosLogOut/></div>
                 {image && image !== "" ? <Image width={1080} height={1080} className='rounded-full w-10 h-10 aspect-square' src={image} alt='image' /> : <div className='h-10 w-10 rounded-full bg-slate-500'></div>}
                 </button>
             <div className='w-[60%] flex flex-col max-md:hidden'>
