@@ -1,3 +1,15 @@
+import { Document } from 'mongoose';
+
+type UserDocument = {
+    email: string;
+    pwd: string;
+    salt: string;
+    username: string;
+    userhandle: number;
+    role: 'USER' | 'ADMIN';
+    createdAt: Date;
+    updatedAt: Date;
+  }
 
 
 type UserType = {
