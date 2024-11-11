@@ -11,12 +11,12 @@ const config: Config = {
   coverageProvider: 'v8',
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
-  // Remove the ts-jest preset
-  testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/'],
   moduleNameMapper: {
-    // Handle module aliases (if you're using them in tsconfig)
-    '^@/components/(.*)$': '<rootDir>/components/$1',
-    '^@/pages/(.*)$': '<rootDir>/pages/$1'
+    '^@/(.*)$': '<rootDir>/$1',  // Adjust this path based on your project structure
+  },
+  testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/'],
+  testEnvironmentOptions: {
+    customExportConditions: [''], // This helps with Next.js settings
   }
 }
  

@@ -6,7 +6,7 @@ import { MdDelete } from "react-icons/md";
 import { toast } from 'react-toastify';
 import { usePostHooks } from './post.hooks';
 
-export const PostComponent = ({ getPosts, image, user, id, content, userimage, username, userhandle, date }: {date:string, getPosts:()=>void, image?: string, content?: string, user: UserType, id:string, userimage: string, username: string, userhandle: string }) => {
+export const PostComponent = ({ getPosts, image, user, id, content, userimage, username, userhandle, dateData }: { dateData:string, getPosts:()=>void, image?: string, content?: string, user: UserType, id:string, userimage: string, username: string, userhandle: string }) => {
 
   function returnDate(input:string){
     const date = new Date(String(input));
@@ -73,7 +73,7 @@ export const PostComponent = ({ getPosts, image, user, id, content, userimage, u
         </div>
         {image !== "" && <Image src={image as string} alt='image' width={1920} height={1080} className=' rounded-xl mt-4 border-2 border-slate-400/30' />}
       </div>
-      <h3 className='text-sm text-slate-500 mt-5 text-end'>{returnDate(date)}</h3>
+      <h3 className='text-sm text-slate-500 mt-5 text-end'>{returnDate(dateData)}</h3>
     </div>
   )
 }
