@@ -1,3 +1,4 @@
+import { UserType } from '@/types/types';
 import mongoose, { Schema, model, models, trusted } from 'mongoose';
 
 const UserSchema = new Schema<UserType>({

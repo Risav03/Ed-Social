@@ -1,8 +1,8 @@
 'use client'
 import React from 'react'
-import { usePostHooks } from '../../lib/hooks/post.hooks'
 import { useGlobalContext } from '@/context/MainContext'
 import { PostComponent } from './postComponent'
+import { UserType } from '@/types/types'
 
 export const PostFetcher = () => {
 
