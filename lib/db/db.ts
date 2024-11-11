@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-class DatabaseController{
+class DatabaseController {
   private static instance: DatabaseController;
   private isConnected: boolean = false;
 

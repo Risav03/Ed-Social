@@ -15,7 +15,13 @@ type GlobalContextType = {
   getUser: () => void;
   showSearch: boolean;
   setShowSearch: Dispatch<SetStateAction<boolean>>;
+  postsLoading: boolean;
+  setPostsLoading: Dispatch<SetStateAction<boolean>>;
+  lastPage: boolean;
+  setLastPage: Dispatch<SetStateAction<boolean>>;
   showSidebar: boolean;
+  pageIndex: number;
+  setPageIndex: Dispatch<SetStateAction<number>>;
   setShowSidebar: Dispatch<SetStateAction<boolean>>;
   getPosts: () => void;
   editProfile: boolean;
@@ -30,8 +36,14 @@ const GlobalContext = createContext<GlobalContextType>({
   getPosts: () => {},
   posts: null,
   setPosts: ()=>{},
+  pageIndex: 1,
+  setPageIndex:()=>{},
   showSearch: false,
   setShowSearch: () => { },
+  lastPage:false,
+  setLastPage:() => {},
+  postsLoading: false,
+  setPostsLoading: () => { },
   showSidebar: false,
   setShowSidebar: () => { },
   editProfile: false,
@@ -47,17 +59,27 @@ export const GlobalContextProvider = ({ children } : { children: ReactNode}) => 
   const {data: session} = useSession();
 
   const[posts, setPosts] = useState<Array<PostType>>([]);
+  const[postsLoading, setPostsLoading] = useState<boolean>(false);
+  const[lastPage, setLastPage] = useState<boolean>(false);
+
+  const[pageIndex, setPageIndex] = useState<number>(0);
+
+
     const pathname = usePathname()
 
     async function getPosts(){
+      setPostsLoading(true);
         try{
           if(pathname == "/"){
-            const res = await axios.get("/api/post/");
-            setPosts(res.data.posts)
+            const res = await axios.get("/api/post"+"?pageIndex="+pageIndex+"&pageSize=10");
+            console.log(res.data.posts)
+            res.data.posts.map((item:PostType)=>{
+              setPosts((prev) => [...prev , item])
+            })
+            setLastPage(res?.data?.isLastPage);
           }
           else if(pathname.includes("profile")){
             const res = await axios.get("/api/post/"+pathname.split("/")[2]);
-
             setPosts(res.data.posts)
           }
             
@@ -65,10 +87,19 @@ export const GlobalContextProvider = ({ children } : { children: ReactNode}) => 
         catch(err){
             console.error(err);
         }
+        finally{
+          setPostsLoading(false)
+        }
     }
 
     useEffect(()=>{
         getPosts()
+    },[pageIndex, pathname])
+
+    useEffect(()=>{
+      setPageIndex(0);
+      setLastPage(false);
+      setPosts([]);
     },[pathname])
 
 
@@ -100,7 +131,7 @@ export const GlobalContextProvider = ({ children } : { children: ReactNode}) => 
 
   return (
     <GlobalContext.Provider value={{
-      user, setUser, getUser,
+      user, setUser, getUser, postsLoading, setPostsLoading, pageIndex, setPageIndex, lastPage, setLastPage,
       showSearch, setShowSearch,
       showSidebar, setShowSidebar,
       editProfile, setEditProfile, posts, getPosts, setPosts

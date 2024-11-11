@@ -47,7 +47,7 @@ export const PostComponent = ({ getPosts, image, user, id, content, userimage, u
   };
   
   return (
-    <div className='border-b-[1px] border-slate-400/20 md:py-6 md:px-8 py-3 px-4'>
+    <div className='border-b-[1px] border-slate-400/20 md:py-6 md:px-8 py-3 px-4 w-full'>
       <div className='flex gap-2 items-center'>
         <div className='flex gap-2'>
           <div className='rounded-full h-10 w-10 overflow-hidden object-contain'>
@@ -71,7 +71,7 @@ export const PostComponent = ({ getPosts, image, user, id, content, userimage, u
         </h3>
         ))}
         </div>
-        {image !== "" && <Image src={image as string} alt='image' width={1920} height={1080} className=' rounded-xl mt-4 border-2 border-slate-400/30' />}
+        {image && image !== "" && <Image src={image as string} alt='image' width={1920} height={1080} className=' rounded-xl mt-4 border-2 border-slate-400/30' />}
       </div>
       <h3 className='text-sm text-slate-500 mt-5 text-end'>{returnDate(dateData)}</h3>
     </div>
