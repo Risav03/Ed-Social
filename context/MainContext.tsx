@@ -99,7 +99,7 @@ export const GlobalContextProvider = ({ children } : { children: ReactNode}) => 
 
     useEffect(()=>{
         getPosts()
-    },[pageIndex])
+    },[pageIndex, user])
 
     useEffect(()=>{
       setPageIndex(0);
