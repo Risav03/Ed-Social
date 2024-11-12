@@ -20,7 +20,7 @@ interface RetryConfig {
 }
 
 const retryConfig: RetryConfig = {
-  maxRetries: 3,
+  maxRetries: 10,
   baseDelay: 1000,
   maxDelay: 5000
 };

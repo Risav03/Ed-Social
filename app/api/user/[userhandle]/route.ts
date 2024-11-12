@@ -12,6 +12,10 @@ export async function GET(req:any){
 
         const user = await User.findOne({userhandle: handle});
 
+        if(!user){
+            return NextResponse.json({error:"User not found"},{status:404});
+        }
+
         return NextResponse.json({user:user},{status:200});
 
     }

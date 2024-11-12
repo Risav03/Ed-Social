@@ -51,8 +51,8 @@ describe('GET User Route', () => {
     const data = await response.json();
 
     expect(User.findOne).toHaveBeenCalledWith({ userhandle: 'nonexistentuser' });
-    expect(response.status).toBe(200);
-    expect(data).toEqual({ user: null });
+    expect(response.status).toBe(404);
+    expect(data).toEqual({ error: "User not found" });
   });
 
   it('should handle database connection errors', async () => {
