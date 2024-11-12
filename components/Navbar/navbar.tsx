@@ -50,7 +50,7 @@ export const Navbar = () => {
                                     <FaSearch/>
                                 </li>
                             </button>
-                            <li className='max-md:hidden'>
+                            <li className='max-md:hidden mt-2'>
                                 <ActionButton action='Post' onClick={()=>setPostModal(true)} />
                             </li>
                             <li className='md:hidden w-12'>
