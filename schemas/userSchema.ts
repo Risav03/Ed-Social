@@ -36,37 +36,18 @@ const UserSchema = new Schema<UserType>({
     banner: {
         type: String,
     },
-    website:{
-        type:String
-    },
     bio: {
         type: String,
-        default: "Enter a really cool description about you."
-    },
-    followers: {
-        type: Number,
-        default: 0
-    },
-    following: {
-        type: Number,
-        default: 0
+        default: "Enter a really cool description about yourself."
     },
     searchHistory: {
         type: [String],
         default: null
     },
-    role: {
-        type: String,
-        default: "USER"
-    },
     createdAt: {
         type: Date,
         default: Date.now
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
-    },
+    }
 
 }, { collection: "users" })
 

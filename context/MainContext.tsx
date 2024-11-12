@@ -11,10 +11,8 @@ type GlobalContextType = {
   getUser: () => void;
   showSearch: boolean;
   setShowSearch: Dispatch<SetStateAction<boolean>>;
-  showSidebar: boolean;
   pageIndex: number;
   setPageIndex: Dispatch<SetStateAction<number>>;
-  setShowSidebar: Dispatch<SetStateAction<boolean>>;
   editProfile: boolean;
   setEditProfile: Dispatch<SetStateAction<boolean>>;
   fetch: boolean;
@@ -30,8 +28,6 @@ const GlobalContext = createContext<GlobalContextType>({
   setPageIndex:()=>{},
   showSearch: false,
   setShowSearch: () => { },
-  showSidebar: false,
-  setShowSidebar: () => { },
   fetch: false,
   setFetch: () => { },
   editProfile: false,
@@ -56,7 +52,6 @@ export const GlobalContextProvider = ({ children } : { children: ReactNode}) => 
     try{
       // @ts-ignore
       const res = await axios.get(`/api/user/email/${session?.user.email}`);
-      console.log(session?.user);
       setUser(res.data.user);
     }
     catch(err){
@@ -80,7 +75,6 @@ export const GlobalContextProvider = ({ children } : { children: ReactNode}) => 
     <GlobalContext.Provider value={{
       user, setUser, getUser, pageIndex, setPageIndex, fetch, setFetch,
       showSearch, setShowSearch,
-      showSidebar, setShowSidebar,
       editProfile, setEditProfile,
     }}>
       {children}

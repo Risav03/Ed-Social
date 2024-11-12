@@ -15,9 +15,9 @@ export const EditProfile = () => {
     const { setEditProfile, user } = useGlobalContext()
     const { username, setUsername, userhandle, setUserhandle, bio, setBio, updateInfo, banner, setBanner, profilePic, setProfilePic, loading } = useEditProfileHooks({ user });
 
-    return (
-        <div className='w-screen h-screen bg-white/5 backdrop-blur-lg fixed top-0 left-0 z-[50] flex items-center justify-center'>
+    return (<>
             {loading && <Loader/>}
+        <div className='w-screen h-screen bg-white/5 backdrop-blur-lg fixed top-0 left-0 z-[50] flex items-center justify-center'>
             <Card className='md:w-[25rem] w-80' >
                 <div className='flex gap-2 items-center text-slate-400'>
                     <h2 className='text-2xl w-2/3 font-bold'>Edit Profile</h2>
@@ -89,5 +89,6 @@ export const EditProfile = () => {
 
             </Card>
         </div>
+    </>
     )
 }

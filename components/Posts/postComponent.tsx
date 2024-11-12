@@ -72,7 +72,7 @@ export const PostComponent = ({ getPosts, image, user, id, content, userimage, u
         </h3>
         ))}
         </div>
-        {image && image !== "" && <Image src={image as string} alt='image' width={1920} height={1080} className=' rounded-xl mt-4 border-2 border-slate-400/30' />}
+        {image && image !== "" && <Image src={image as string} alt='image' width={1920} height={1080} className='max-h-[30rem] object-cover rounded-xl mt-4 border-2 border-slate-400/30' />}
       </div>
       <h3 className='text-sm text-slate-500 mt-5 text-end'>{returnDate(dateData)}</h3>
     </div>

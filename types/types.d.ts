@@ -20,15 +20,11 @@ type UserType = {
     pwd:string;
     salt:string;
     profileImage:string;
-    website:string;
     banner:string;
     bio:string;
-    followers:number;
-    following:number;
     searchHistory:Array<string>;
     role:string;
     createdAt:Date;
-    updatedAt:Date;
 }
 
 type PostType = {
@@ -36,8 +32,5 @@ type PostType = {
     createdBy:ObjectId;
     content:string;
     media:string;
-    likes:number;
-    comments:number;
     createdAt:Date;
-    updatedAt:Date;
 }
