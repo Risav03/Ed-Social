@@ -1,125 +1,131 @@
 import { DELETE } from '@/app/api/post/id/[id]/route';
-import Post from '@/schemas/postSchema';
-import { AuthService } from '@/services/authService';
+import { connectToDB } from "@/lib/db/db";
+import Post from "@/schemas/postSchema";
+import { AuthService } from "@/services/authService";
+import { NextResponse } from "next/server";
 
+// Mock dependencies
+jest.mock("@/lib/db/db", () => ({
+    connectToDB: jest.fn()
+}));
+jest.mock("@/schemas/postSchema", () => ({
+    findById: jest.fn(),
+    findByIdAndDelete: jest.fn()
+}));
+jest.mock("@/services/authService", () => ({
+    AuthService: {
+        getAuthenticatedUser: jest.fn()
+    }
+}));
 
-jest.mock("@/lib/db/db");
+describe('DELETE Post Handler', () => {
+    // Setup common test variables
+    const mockUser = { id: 'user123' };
+    const mockPost = {
+        _id: 'post123',
+        createdBy: 'user123',
+        title: 'Test Post',
+        toString: () => 'user123' // Add toString method for MongoDB ObjectId simulation
+    };
 
-jest.mock('@/schemas/postSchema');
-jest.mock('@/services/authService');
-
-describe('DELETE Post Route', () => {
+    // Reset all mocks before each test
     beforeEach(() => {
         jest.clearAllMocks();
-        (AuthService.getAuthenticatedUser as jest.Mock).mockResolvedValue(true);
+        // Setup default successful connection
+        (connectToDB as jest.Mock).mockResolvedValue(undefined);
     });
 
-    it('should successfully delete a post', async () => {
-
-        const mockPostId = '123456789';
-        const mockDeletedPost = {
-            _id: mockPostId,
-            content: 'Test post',
-            createdBy: 'user123'
-        };
-
-        const mockRequest = {
-            nextUrl: {
-                pathname: `/api/post/email/${mockPostId}`
-            }
-        };
-
-        (Post.findByIdAndDelete as jest.Mock).mockResolvedValue(mockDeletedPost);
-
-        const response = await DELETE(mockRequest);
-        const data = await response.json();
-
-        expect(response.status).toBe(200);
-        expect(data.deleted).toEqual(mockDeletedPost);
-        expect(Post.findByIdAndDelete).toHaveBeenCalledWith({ _id: mockPostId });
+    // Helper function to create mock request
+    const createMockRequest = (userId: string | null, postId: string) => ({
+        url: userId ? `http://localhost:3000/api/posts?userId=${userId}` : 'http://localhost:3000/api/posts',
+        nextUrl: {
+            pathname: `/api/post/${postId}/route`,
+            searchParams: new URLSearchParams(userId ? { userId } : {})
+        }
     });
 
-    it('should return 500 if deletion fails', async () => {
-        const mockPostId = '123456789';
-        const mockError = new Error('Database error');
+    it('should return 400 if userId is missing', async () => {
+        // Setup
+        const req = createMockRequest(null, 'post123');
+        (AuthService.getAuthenticatedUser as jest.Mock).mockResolvedValue(mockUser);
 
-        const mockRequest = {
-            nextUrl: {
-                pathname: `/api/post/email/${mockPostId}`
+        // Execute
+        const response = await DELETE(req);
+        const responseData = await response.json();
+
+        // Assert
+        expect(response.status).toBe(400);
+        expect(responseData.error).toBe('userId query parameter is required');
+    });
+
+    it('should return 403 if authenticated user does not match requested userId', async () => {
+        // Setup
+        const req = createMockRequest('user456', 'post123');
+        (AuthService.getAuthenticatedUser as jest.Mock).mockResolvedValue(mockUser);
+
+        // Execute
+        const response = await DELETE(req);
+        const responseData = await response.json();
+
+        // Assert
+        expect(response.status).toBe(403);
+        expect(responseData.error).toBe('Unauthorized: You can only delete your own posts');
+    });
+
+    it('should return 404 if post is not found', async () => {
+        // Setup
+        const req = createMockRequest('user123', 'post123');
+        (AuthService.getAuthenticatedUser as jest.Mock).mockResolvedValue(mockUser);
+        (Post.findById as jest.Mock).mockResolvedValue(null);
+
+        // Execute
+        const response = await DELETE(req);
+        const responseData = await response.json();
+
+        // Assert
+        expect(response.status).toBe(404);
+        expect(responseData.error).toBe('Post not found');
+    });
+
+    it('should return 403 if post belongs to different user', async () => {
+        // Setup
+        const req = createMockRequest('user123', 'post123');
+        (AuthService.getAuthenticatedUser as jest.Mock).mockResolvedValue(mockUser);
+        (Post.findById as jest.Mock).mockResolvedValue({
+            ...mockPost,
+            createdBy: {
+                toString: () => 'user456' // Different user
             }
-        };
+        });
 
-        (Post.findByIdAndDelete as jest.Mock).mockRejectedValue(mockError);
+        // Execute
+        const response = await DELETE(req);
+        const responseData = await response.json();
 
-        const response = await DELETE(mockRequest);
-        const data = await response.json();
+        // Assert
+        expect(response.status).toBe(403);
+        expect(responseData.error).toBe("Unauthorized: This post doesn't belong to you");
+    });
 
+    it('should return 500 if database operation fails', async () => {
+        // Setup
+        const req = createMockRequest('user123', 'post123');
+        (AuthService.getAuthenticatedUser as jest.Mock).mockResolvedValue(mockUser);
+        (Post.findById as jest.Mock).mockRejectedValue(new Error('Database error'));
+        
+        // Spy on console.error
+        const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+
+        // Execute
+        const response = await DELETE(req);
+        const responseData = await response.json();
+
+        // Assert
         expect(response.status).toBe(500);
-        expect(data.error).toBeDefined();
-    });
-
-    it('should check authentication before deletion', async () => {
-
-        const mockPostId = '123456789';
-        const mockRequest = {
-            nextUrl: {
-                pathname: `/api/post/email/${mockPostId}`
-            }
-        };
-
-        await DELETE(mockRequest);
-
-        expect(AuthService.getAuthenticatedUser).toHaveBeenCalledWith(mockRequest);
-    });
-
-    it('should handle authentication failure', async () => {
-        const mockPostId = '123456789';
-        const mockRequest = {
-            nextUrl: {
-                pathname: `/api/post/email/${mockPostId}`
-            }
-        };
-
-        const mockAuthError = new Error('Unauthorized');
-        (AuthService.getAuthenticatedUser as jest.Mock).mockRejectedValue(mockAuthError);
-
-        await expect(DELETE(mockRequest)).rejects.toThrow('Unauthorized');
-        expect(Post.findByIdAndDelete).not.toHaveBeenCalled();
-    });
-
-    it('should handle non-existent post', async () => {
-
-        const mockPostId = 'nonexistentId';
-        const mockRequest = {
-            nextUrl: {
-                pathname: `/api/post/email/${mockPostId}`
-            }
-        };
-
-        (Post.findByIdAndDelete as jest.Mock).mockResolvedValue(null);
-
-        const response = await DELETE(mockRequest);
-        const data = await response.json();
-
-        expect(response.status).toBe(200);
-        expect(data.deleted).toBeNull();
-    });
-
-    it('should extract post ID correctly from pathname', async () => {
-
-        const mockPostId = '123456789';
-        const mockRequest = {
-            nextUrl: {
-                pathname: `/api/post/email/${mockPostId}/additional/segments`
-            }
-        };
-
-        (Post.findByIdAndDelete as jest.Mock).mockResolvedValue({ _id: mockPostId });
-
-
-        await DELETE(mockRequest);
-
-
-        expect(Post.findByIdAndDelete).toHaveBeenCalledWith({ _id: mockPostId });
+        expect(responseData.error).toBe('Internal server error');
+        expect(consoleSpy).toHaveBeenCalled();
+        
+        // Clean up
+        consoleSpy.mockRestore();
     });
 });

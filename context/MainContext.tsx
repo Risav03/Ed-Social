@@ -68,33 +68,33 @@ export const GlobalContextProvider = ({ children } : { children: ReactNode}) => 
     const pathname = usePathname()
 
     async function getPosts(){
-      setPostsLoading(true);
-        try{
-          if(pathname == "/"){
-            const res = await axios.get("/api/post"+"?pageIndex="+pageIndex+"&pageSize=10");
+      // setPostsLoading(true);
+      //   try{
+      //     if(pathname == "/"){
+      //       const res = await axios.get("/api/post"+"?pageIndex="+pageIndex+"&pageSize=10");
 
-            res.data.posts.map((item:PostType)=>{
-              setPosts((prev) => [...prev , item])
-            })
-            setLastPage(res?.data?.isLastPage);
-          }
-          else if(pathname.includes("profile")){
+      //       res.data.posts.map((item:PostType)=>{
+      //         setPosts((prev) => [...prev , item])
+      //       })
+      //       setLastPage(res?.data?.isLastPage);
+      //     }
+      //     else if(pathname.includes("profile")){
 
-            const res = await axios.get("/api/post/"+pathname.split("/")[2]+"?pageIndex="+pageIndex+"&pageSize=10");
+      //       const res = await axios.get("/api/post/"+pathname.split("/")[2]+"?pageIndex="+pageIndex+"&pageSize=10");
 
-            res.data.posts.map((item:PostType)=>{
-              setPosts((prev) => [...prev , item])
-            })
-            setLastPage(res?.data?.isLastPage);
-          }
+      //       res.data.posts.map((item:PostType)=>{
+      //         setPosts((prev) => [...prev , item])
+      //       })
+      //       setLastPage(res?.data?.isLastPage);
+      //     }
             
-        }
-        catch(err){
-            console.error(err);
-        }
-        finally{
-          setPostsLoading(false)
-        }
+      //   }
+      //   catch(err){
+      //       console.error(err);
+      //   }
+      //   finally{
+      //     setPostsLoading(false)
+      //   }
     }
 
     useEffect(()=>{

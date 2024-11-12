@@ -15,7 +15,7 @@ export const PostComponent = ({ getPosts, image, user, id, content, userimage, u
 
   async function deletePost(){
     try{
-      await axios.delete("/api/post/id/"+id);
+      await axios.delete("/api/post/id/"+id+"?userId="+user._id);
       setPosts([])
       toast.success("Post deleted");
       getPosts();
