@@ -1,10 +1,7 @@
 "use client"
-import Link from 'next/link'
 import React, { useState } from 'react'
-import {useSession} from "next-auth/react"
 import { AccountDisplay } from '../UI/accountDisplay'
-import Image from 'next/image'
-import logo from "@/assets/logos/logo.svg"
+
 import { CgHomeAlt } from "react-icons/cg";
 import { CgProfile } from "react-icons/cg";
 import { ConnectModal } from '../Connect/connectModal'
