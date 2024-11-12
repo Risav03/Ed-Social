@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import React, { useState } from 'react'
 import {toast} from "react-toastify"
+import { usePostsHook } from './posts.hook';
 
 export const useNavbarHooks = () => {
 
@@ -11,7 +12,7 @@ export const useNavbarHooks = () => {
     const[postModal, setPostModal] = useState<boolean>(false);
     const[postContent, setPostContent] = useState<string>("");
     const[postMedia, setPostMedia] = useState<File|null>();
-    const{getPosts, user, setPosts} = useGlobalContext()
+    const{user} = useGlobalContext()
     const{data:session} = useSession()
     const[loading, setLoading] = useState<boolean>(false);
     const[searchModal, setSearchModal] = useState<boolean>(false);
@@ -39,8 +40,6 @@ export const useNavbarHooks = () => {
 
             if(res){
                 toast.success("Post created!");
-                setPosts([]);
-                getPosts();
                 setPostModal(false);
                 setPostContent("");
                 setPostMedia(null)

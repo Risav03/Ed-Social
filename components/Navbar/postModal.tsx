@@ -11,8 +11,8 @@ export const PostModal = ({ setPostModal, setPostContent, postContent, postMedia
             <Card className='md:w-[25rem] w-80'>
                 
                 <div className='flex gap-2 items-center text-slate-400'>
-                    <h2 className='text-2xl w-1/2 font-bold'>Create Post</h2>
-                    <div className='w-1/2 flex justify-end'>
+                    <h2 className='text-2xl w-2/3 font-bold'>Create Post</h2>
+                    <div className='w-1/3 flex justify-end'>
                         <button onClick={() => { setPostModal(false) }} className='hover:text-red-500 duration-200'><RxCross2 /></button>
                     </div>
                 </div>

@@ -1,14 +1,19 @@
 'use client'
-import { useGlobalContext } from '@/context/MainContext';
 import React, { memo } from 'react';
 import { PostComponent } from '../Posts/postComponent';
 import { UserType } from '@/types/types';
 import { RiLoader5Fill } from 'react-icons/ri';
 import { usePostsHook } from '@/lib/hooks/posts.hook';
+import { usePathname } from 'next/navigation';
 
 const MemoizedPostComponent = memo(PostComponent);
 
+
+
 export const Timeline = () => {
+
+  const pathname = usePathname()
+
     const {
         getPosts,
         user,
@@ -18,7 +23,7 @@ export const Timeline = () => {
         setPosts,
         posts,
         error
-    } = usePostsHook();
+    } = usePostsHook({pathname});
 
     const handleLoadMore = () => {
         setPageIndex(prev => prev + 1);

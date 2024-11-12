@@ -10,7 +10,7 @@ export const PostComponent = ({ getPosts, image, user, id, content, userimage, u
 
   function returnDate(input:string){
     const date = new Date(String(input));
-    return (String(date.getDate()) + "/" + String(date.getMonth()+1) + "/" + String(date.getFullYear() +"    "+ String(date.getHours() + ":" + String(date.getMinutes()))))
+    return (String(date.getDate()) + "/" + String(date.getMonth()+1) + "/" + String(date.getFullYear() +"    " + `${date.getHours()<10 ? "0" : ""}` + String(date.getHours() + ":" + `${date.getMinutes()<10 ? "0" : ""}` + String(date.getMinutes()))))
   }
 
   async function deletePost(){

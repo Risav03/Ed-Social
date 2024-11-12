@@ -4,6 +4,7 @@ import { PostComponent } from './postComponent'
 import { UserType } from '@/types/types'
 import { RiLoader5Fill } from 'react-icons/ri'
 import { usePostsHook } from '@/lib/hooks/posts.hook'
+import { usePathname } from 'next/navigation'
 
 const MemoizedPostComponent = memo(PostComponent);
 
@@ -37,6 +38,10 @@ const EmptyState = memo(() => (
 EmptyState.displayName = 'EmptyState';
 
 export const PostFetcher = () => {
+
+  const pathname = usePathname()
+
+
   const {
     getPosts,
     user,
@@ -46,7 +51,7 @@ export const PostFetcher = () => {
     setPosts,
     posts,
     error
-  } = usePostsHook();
+  } = usePostsHook({pathname});
 
   const handleLoadMore = useCallback(() => {
     setPageIndex(prev => prev + 1);

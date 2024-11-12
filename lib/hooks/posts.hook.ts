@@ -2,31 +2,29 @@
 import { useGlobalContext } from '@/context/MainContext';
 import { PostType } from '@/types/types';
 import axios from 'axios';
-import { usePathname } from 'next/navigation';
 import { useEffect, useCallback, useRef, useState } from 'react';
+import { useNavbarHooks } from './navbar.hooks';
 
-// Create axios instance with defaults
 const axiosInstance = axios.create({
-  timeout: 10000,
-  headers: {
-    'Cache-Control': 'no-cache',
-  }
+    timeout: 10000,
+    headers: {
+        'Cache-Control': 'no-cache',
+    }
 });
 
-export const usePostsHook = () => {
-    const pathname = usePathname();
+export const usePostsHook = ({ pathname }: { pathname: string }) => {
+
     const { setPageIndex, pageIndex, user } = useGlobalContext();
-    
-    // Use useRef for mutable values that shouldn't trigger rerenders
+
     const loadingRef = useRef(false);
     const [posts, setPosts] = useState<PostType[]>([]);
     const [postsLoading, setPostsLoading] = useState(false);
     const [lastPage, setLastPage] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const { post } = useNavbarHooks()
 
-    // Memoize getPosts to prevent unnecessary recreations
     const getPosts = useCallback(async () => {
-        // Prevent concurrent requests
+
         if (loadingRef.current) return;
         loadingRef.current = true;
         setPostsLoading(true);
@@ -42,7 +40,7 @@ export const usePostsHook = () => {
                 pageSize: '10'
             });
 
-            const url = pathname === '/' 
+            const url = pathname === '/'
                 ? `${baseUrl}?${params}`
                 : pathname.includes('profile')
                     ? `${baseUrl}/${pathname.split('/')[2]}?${params}`
@@ -56,7 +54,6 @@ export const usePostsHook = () => {
 
             clearTimeout(timeoutId);
 
-            // Use functional update to ensure data consistency
             setPosts(prevPosts => {
                 const newPosts = res.data.posts.filter(
                     (newPost: PostType) => !prevPosts.some(
@@ -80,7 +77,7 @@ export const usePostsHook = () => {
         }
     }, [pageIndex, pathname]);
 
-    // Reset state when pathname changes
+
     useEffect(() => {
         setPageIndex(0);
         setLastPage(false);
@@ -88,7 +85,13 @@ export const usePostsHook = () => {
         setError(null);
     }, [pathname, setPageIndex]);
 
-    // Fetch posts when dependencies change
+    useEffect(() => {
+            setPosts([]);
+            getPosts()
+        
+    }, [])
+
+
     useEffect(() => {
         getPosts();
     }, [getPosts, user]);

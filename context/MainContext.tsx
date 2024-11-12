@@ -1,29 +1,20 @@
 "use client";
 
-import { EditProfile } from "@/components/Dashboard/EditProfile/editProfile";
 import { PostType, UserType } from "@/types/types";
 import axios from "axios";
 import { useSession } from "next-auth/react";
-import { usePathname } from "next/navigation";
 import { createContext, useContext, Dispatch, SetStateAction, useState, ReactNode, useEffect } from "react";
 
 type GlobalContextType = {
   user: UserType | null;
   setUser: Dispatch<SetStateAction<UserType | null>>;
-  posts: Array<PostType | null> | null;
-  setPosts: Dispatch<SetStateAction<Array<PostType>>>;
   getUser: () => void;
   showSearch: boolean;
   setShowSearch: Dispatch<SetStateAction<boolean>>;
-  postsLoading: boolean;
-  setPostsLoading: Dispatch<SetStateAction<boolean>>;
-  lastPage: boolean;
-  setLastPage: Dispatch<SetStateAction<boolean>>;
   showSidebar: boolean;
   pageIndex: number;
   setPageIndex: Dispatch<SetStateAction<number>>;
   setShowSidebar: Dispatch<SetStateAction<boolean>>;
-  getPosts: () => void;
   editProfile: boolean;
   setEditProfile: Dispatch<SetStateAction<boolean>>;
 
@@ -33,17 +24,10 @@ const GlobalContext = createContext<GlobalContextType>({
   user: null,
   setUser: () => { },
   getUser: () => { },
-  getPosts: () => {},
-  posts: null,
-  setPosts: ()=>{},
   pageIndex: 1,
   setPageIndex:()=>{},
   showSearch: false,
   setShowSearch: () => { },
-  lastPage:false,
-  setLastPage:() => {},
-  postsLoading: false,
-  setPostsLoading: () => { },
   showSidebar: false,
   setShowSidebar: () => { },
   editProfile: false,
@@ -63,50 +47,6 @@ export const GlobalContextProvider = ({ children } : { children: ReactNode}) => 
   const[lastPage, setLastPage] = useState<boolean>(false);
 
   const[pageIndex, setPageIndex] = useState<number>(0);
-
-
-    const pathname = usePathname()
-
-    async function getPosts(){
-      // setPostsLoading(true);
-      //   try{
-      //     if(pathname == "/"){
-      //       const res = await axios.get("/api/post"+"?pageIndex="+pageIndex+"&pageSize=10");
-
-      //       res.data.posts.map((item:PostType)=>{
-      //         setPosts((prev) => [...prev , item])
-      //       })
-      //       setLastPage(res?.data?.isLastPage);
-      //     }
-      //     else if(pathname.includes("profile")){
-
-      //       const res = await axios.get("/api/post/"+pathname.split("/")[2]+"?pageIndex="+pageIndex+"&pageSize=10");
-
-      //       res.data.posts.map((item:PostType)=>{
-      //         setPosts((prev) => [...prev , item])
-      //       })
-      //       setLastPage(res?.data?.isLastPage);
-      //     }
-            
-      //   }
-      //   catch(err){
-      //       console.error(err);
-      //   }
-      //   finally{
-      //     setPostsLoading(false)
-      //   }
-    }
-
-    useEffect(()=>{
-        getPosts()
-    },[pageIndex, user])
-
-    useEffect(()=>{
-      setPageIndex(0);
-      setLastPage(false);
-      setPosts([]);
-    },[pathname])
-
 
   const[editProfile, setEditProfile] = useState<boolean>(false);
 
@@ -136,10 +76,10 @@ export const GlobalContextProvider = ({ children } : { children: ReactNode}) => 
 
   return (
     <GlobalContext.Provider value={{
-      user, setUser, getUser, postsLoading, setPostsLoading, pageIndex, setPageIndex, lastPage, setLastPage,
+      user, setUser, getUser, pageIndex, setPageIndex,
       showSearch, setShowSearch,
       showSidebar, setShowSidebar,
-      editProfile, setEditProfile, posts, getPosts, setPosts
+      editProfile, setEditProfile,
     }}>
       {children}
     </GlobalContext.Provider>
