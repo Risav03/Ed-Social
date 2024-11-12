@@ -17,6 +17,8 @@ type GlobalContextType = {
   setShowSidebar: Dispatch<SetStateAction<boolean>>;
   editProfile: boolean;
   setEditProfile: Dispatch<SetStateAction<boolean>>;
+  fetch: boolean;
+  setFetch: Dispatch<SetStateAction<boolean>>
 
 }
 
@@ -30,6 +32,8 @@ const GlobalContext = createContext<GlobalContextType>({
   setShowSearch: () => { },
   showSidebar: false,
   setShowSidebar: () => { },
+  fetch: false,
+  setFetch: () => { },
   editProfile: false,
   setEditProfile: () => { },
 
@@ -42,9 +46,7 @@ export const GlobalContextProvider = ({ children } : { children: ReactNode}) => 
   const [showSidebar, setShowSidebar] = useState(false);
   const {data: session} = useSession();
 
-  const[posts, setPosts] = useState<Array<PostType>>([]);
-  const[postsLoading, setPostsLoading] = useState<boolean>(false);
-  const[lastPage, setLastPage] = useState<boolean>(false);
+  const[fetch, setFetch] = useState<boolean>(false)
 
   const[pageIndex, setPageIndex] = useState<number>(0);
 
@@ -76,7 +78,7 @@ export const GlobalContextProvider = ({ children } : { children: ReactNode}) => 
 
   return (
     <GlobalContext.Provider value={{
-      user, setUser, getUser, pageIndex, setPageIndex,
+      user, setUser, getUser, pageIndex, setPageIndex, fetch, setFetch,
       showSearch, setShowSearch,
       showSidebar, setShowSidebar,
       editProfile, setEditProfile,

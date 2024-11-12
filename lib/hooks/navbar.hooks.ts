@@ -5,18 +5,21 @@ import { useSession } from 'next-auth/react';
 import React, { useState } from 'react'
 import {toast} from "react-toastify"
 import { usePostsHook } from './posts.hook';
+import { usePathname } from 'next/navigation';
 
 export const useNavbarHooks = () => {
+
+    const pathname = usePathname()
 
     const[loginModal, setLoginModal] = useState<boolean>(false);
     const[postModal, setPostModal] = useState<boolean>(false);
     const[postContent, setPostContent] = useState<string>("");
     const[postMedia, setPostMedia] = useState<File|null>();
-    const{user} = useGlobalContext()
+    const{user, setFetch} = useGlobalContext()
     const{data:session} = useSession()
     const[loading, setLoading] = useState<boolean>(false);
     const[searchModal, setSearchModal] = useState<boolean>(false);
-
+    const{getPosts} = usePostsHook({pathname})
 
     async function post(){
         if(postContent == "" && !postMedia){
@@ -40,6 +43,7 @@ export const useNavbarHooks = () => {
 
             if(res){
                 toast.success("Post created!");
+                setFetch((prev)=>!prev)
                 setPostModal(false);
                 setPostContent("");
                 setPostMedia(null)

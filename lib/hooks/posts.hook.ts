@@ -13,18 +13,24 @@ const axiosInstance = axios.create({
 });
 
 export const usePostsHook = ({ pathname }: { pathname: string }) => {
-
-    const { setPageIndex, pageIndex, user } = useGlobalContext();
+    const { setPageIndex, pageIndex, user, fetch } = useGlobalContext();
 
     const loadingRef = useRef(false);
+    const previousFetchRef = useRef(fetch);
     const [posts, setPosts] = useState<PostType[]>([]);
     const [postsLoading, setPostsLoading] = useState(false);
     const [lastPage, setLastPage] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const { post } = useNavbarHooks()
+
+    const resetState = useCallback(() => {
+        setPageIndex(0);
+        setLastPage(false);
+        setError(null);
+        setPosts([]);
+        loadingRef.current = false;
+    }, [setPageIndex]);
 
     const getPosts = useCallback(async () => {
-
         if (loadingRef.current) return;
         loadingRef.current = true;
         setPostsLoading(true);
@@ -77,24 +83,28 @@ export const usePostsHook = ({ pathname }: { pathname: string }) => {
         }
     }, [pageIndex, pathname]);
 
+    useEffect(() => {
+        resetState();
+    }, [pathname, resetState]);
 
     useEffect(() => {
-        setPageIndex(0);
-        setLastPage(false);
-        setPosts([]);
-        setError(null);
-    }, [pathname, setPageIndex]);
+        if (previousFetchRef.current !== fetch) {
+            resetState();
+            previousFetchRef.current = fetch;
+        }
+    }, [fetch, resetState]);
 
     useEffect(() => {
-            setPosts([]);
-            getPosts()
-        
-    }, [])
 
+        if (pageIndex === 0) {
+            getPosts();
+            return;
+        }
 
-    useEffect(() => {
-        getPosts();
-    }, [getPosts, user]);
+        if (pageIndex > 0 && posts.length > 0) {
+            getPosts();
+        }
+    }, [pageIndex, pathname, user, getPosts, posts.length]);
 
     return {
         posts,
