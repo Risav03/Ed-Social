@@ -98,7 +98,7 @@ export const usePostsHook = ({ pathname }: { pathname: string }) => {
       } else {
         const axiosError = err as AxiosError;
         
-        if (axiosError.response?.status === 504 && retryCount < retryConfig.maxRetries) {
+        if ((axiosError.response?.status === 504 || axiosError.response?.status === 500) && retryCount < retryConfig.maxRetries) {
           const delay = getRetryDelay(retryCount);
           loadingRef.current = false;
           setPostsLoading(false);
