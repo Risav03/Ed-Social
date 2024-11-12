@@ -1,16 +1,30 @@
 'use client'
 import { useGlobalContext } from '@/context/MainContext';
 import { PostType } from '@/types/types';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useEffect, useCallback, useRef, useState } from 'react';
-import { useNavbarHooks } from './navbar.hooks';
 
 const axiosInstance = axios.create({
-    timeout: 10000,
+    timeout: 15000,
     headers: {
         'Cache-Control': 'no-cache',
+    },
+    validateStatus: (status) => {
+        return status >= 200 && status < 300 || status === 504;
     }
 });
+
+interface RetryConfig {
+    maxRetries: number;
+    baseDelay: number;
+    maxDelay: number;
+}
+
+const retryConfig: RetryConfig = {
+    maxRetries: 3,
+    baseDelay: 1000,
+    maxDelay: 5000
+};
 
 export const usePostsHook = ({ pathname }: { pathname: string }) => {
     const { setPageIndex, pageIndex, user, fetch } = useGlobalContext();
@@ -21,6 +35,7 @@ export const usePostsHook = ({ pathname }: { pathname: string }) => {
     const [postsLoading, setPostsLoading] = useState(false);
     const [lastPage, setLastPage] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [isUserReady, setIsUserReady] = useState(false);
 
     const resetState = useCallback(() => {
         setPageIndex(0);
@@ -30,15 +45,23 @@ export const usePostsHook = ({ pathname }: { pathname: string }) => {
         loadingRef.current = false;
     }, [setPageIndex]);
 
-    const getPosts = useCallback(async () => {
-        if (loadingRef.current) return;
+    const getRetryDelay = (retryCount: number): number => {
+        const delay = Math.min(
+            retryConfig.baseDelay * Math.pow(2, retryCount),
+            retryConfig.maxDelay
+        );
+        return delay + Math.random() * 1000;
+    };
+
+    const getPosts = useCallback(async (retryCount = 0) => {
+        if (loadingRef.current || !isUserReady) return;
         loadingRef.current = true;
         setPostsLoading(true);
         setError(null);
 
         try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 8000);
+            const timeoutId = setTimeout(() => controller.abort(), 12000);
 
             const baseUrl = '/api/post';
             const params = new URLSearchParams({
@@ -74,14 +97,26 @@ export const usePostsHook = ({ pathname }: { pathname: string }) => {
             if (axios.isCancel(err)) {
                 setError('Request timed out');
             } else {
-                setError('Failed to fetch posts');
+                const axiosError = err as AxiosError;
+                
+                if (axiosError.response?.status === 504 && retryCount < retryConfig.maxRetries) {
+                    const delay = getRetryDelay(retryCount);
+                    loadingRef.current = false;
+                    setPostsLoading(false);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    return getPosts(retryCount + 1);
+                }
+
+                setError(retryCount === retryConfig.maxRetries ? 
+                    'Service temporarily unavailable. Please try again later.' : 
+                    'Failed to fetch posts');
                 console.error('Error fetching posts:', err);
             }
         } finally {
             setPostsLoading(false);
             loadingRef.current = false;
         }
-    }, [pageIndex, pathname]);
+    }, [pageIndex, pathname, isUserReady]);
 
     useEffect(() => {
         resetState();
@@ -95,6 +130,13 @@ export const usePostsHook = ({ pathname }: { pathname: string }) => {
     }, [fetch, resetState]);
 
     useEffect(() => {
+        if (user !== undefined) {
+            setIsUserReady(true);
+        }
+    }, [user]);
+
+    useEffect(() => {
+        if (!isUserReady) return;
 
         if (pageIndex === 0) {
             getPosts();
@@ -104,7 +146,7 @@ export const usePostsHook = ({ pathname }: { pathname: string }) => {
         if (pageIndex > 0 && posts.length > 0) {
             getPosts();
         }
-    }, [pageIndex, pathname, user, getPosts, posts.length]);
+    }, [pageIndex, pathname, isUserReady, getPosts, posts.length]);
 
     return {
         posts,

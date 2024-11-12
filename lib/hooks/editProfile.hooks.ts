@@ -47,13 +47,13 @@ export const useEditProfileHooks = ({user}:{user:UserType | null}) => {
             if(userhandle != user?.userhandle){
                 router.push("/profile")
             }
-            getUser();
         }
     }
     catch(err){
         console.error(err);
     }
     finally{
+        getUser();
         setLoading(false);
     }
    }

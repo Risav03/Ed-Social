@@ -7,7 +7,7 @@ import { PostFetcher } from '../Posts/postFetcher'
 export const Dashboard = () => {
 
     return (
-        <div className=' h-screen max-h-screen'>
+        <div className='max-md:w-screen h-screen max-h-screen'>
             <div className='border-b-[1px] w-full border-slate-400/20 pb-10'>
                 <DashboardInfo/>
             </div>

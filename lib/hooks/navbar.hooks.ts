@@ -19,7 +19,6 @@ export const useNavbarHooks = () => {
     const{data:session} = useSession()
     const[loading, setLoading] = useState<boolean>(false);
     const[searchModal, setSearchModal] = useState<boolean>(false);
-    const{getPosts} = usePostsHook({pathname})
 
     async function post(){
         if(postContent == "" && !postMedia){
