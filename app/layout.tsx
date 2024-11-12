@@ -38,7 +38,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`font-poppins antialiased `}
+        className={`font-poppins antialiased text-white `}
       >
         <Providers>
         <ToastContainer
