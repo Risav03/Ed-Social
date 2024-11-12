@@ -35,6 +35,7 @@ declare module "next-auth/jwt" {
     id: string;
     role: string;
     accessToken: string;
+    userhandle:string;
   }
 }
 
@@ -154,6 +155,7 @@ const options: NextAuthOptions = {
           ...token,
           id: user.id,
           role: user.role || 'USER',
+          userhandle: user.userhandle,
           accessToken
         };
       }
@@ -166,7 +168,8 @@ const options: NextAuthOptions = {
         user: {
           id: token.id,
           email: token.email,
-          role: token.role
+          role: token.role,
+          userhandle: token.userhandle,
         },
         accessToken: token.accessToken
       };

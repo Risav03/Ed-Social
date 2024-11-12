@@ -3,14 +3,18 @@ import { useGlobalContext } from '@/context/MainContext';
 import { UserType } from '@/types/types';
 import axios from 'axios';
 import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
+import { usePostsHook } from './posts.hook';
 
 export const useEditProfileHooks = ({user}:{user:UserType | null}) => {
 
+
+    const pathname = usePathname()
     const{data:session} = useSession();
     const{getUser, setEditProfile} = useGlobalContext()
+    const{getPosts} = usePostsHook({pathname})
     const router = useRouter();
    const[username, setUsername] = useState<string>("") 
    const[userhandle, setUserhandle] = useState<string>("")
@@ -54,6 +58,7 @@ export const useEditProfileHooks = ({user}:{user:UserType | null}) => {
     }
     finally{
         getUser();
+        getPosts();
         setLoading(false);
     }
    }

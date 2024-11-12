@@ -20,7 +20,7 @@ import { FaSearch } from 'react-icons/fa'
 import { SearchBar } from '../Search/searchBar'
 
 export const Navbar = () => {
-    const{user} = useGlobalContext()
+    const{user, activeUser} = useGlobalContext()
     const{loginModal, setLoginModal, post, postContent, setPostContent, postModal, setPostModal, postMedia, setPostMedia, loading, searchModal, setSearchModal} = useNavbarHooks()
 
     return (
@@ -66,9 +66,9 @@ export const Navbar = () => {
             <div className='h-full flex items-end'>
                 <AccountDisplay 
                     setLoginModal={setLoginModal} 
-                    image={user?.profileImage as string} 
-                    username={user?.userhandle as string} 
-                    name={user?.username as string} 
+                    image={activeUser?.profileImage as string} 
+                    username={activeUser?.userhandle as string} 
+                    name={activeUser?.username as string} 
                 />
             </div>
 

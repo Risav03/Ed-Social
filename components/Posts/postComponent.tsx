@@ -5,12 +5,17 @@ import Link from 'next/link'
 import React, { Dispatch, SetStateAction } from 'react'
 import { MdDelete } from "react-icons/md";
 import { toast } from 'react-toastify';
+import moment from "moment"
+import { useSession } from 'next-auth/react';
 
 export const PostComponent = ({ getPosts, image, user, id, content, userimage, username, userhandle, dateData, setPosts }: { setPosts:Dispatch<SetStateAction<PostType[]>>, dateData:string, getPosts:()=>void, image?: string, content?: string, user: UserType, id:string, userimage: string, username: string, userhandle: string }) => {
 
+  const {data:session} = useSession()
+
   function returnDate(input:string){
     const date = new Date(String(input));
-    return (String(date.getDate()) + "/" + String(date.getMonth()+1) + "/" + String(date.getFullYear() +"    " + `${date.getHours()<10 ? "0" : ""}` + String(date.getHours() + ":" + `${date.getMinutes()<10 ? "0" : ""}` + String(date.getMinutes()))))
+    
+    return moment(date).fromNow()
   }
 
   async function deletePost(){
@@ -60,7 +65,8 @@ export const PostComponent = ({ getPosts, image, user, id, content, userimage, u
             <h3 className='text-sm leading-none text-slate-500'>@{userhandle}</h3>
           </div>
         </div>
-        {user?.userhandle == userhandle && <div className='w-[80%] flex justify-end'>
+        {/* @ts-ignore */}
+        {session?.user?.userhandle === userhandle && <div className='w-[80%] flex justify-end'>
           <button onClick={()=>{deletePost()}} className='text-slate-400 p-2 border-[1px] border-slate-400/20 hover:bg-slate-200/10 duration-200 rounded-lg'><MdDelete/></button>
         </div>}
       </div>
