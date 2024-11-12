@@ -6,6 +6,7 @@ import React, { useState } from 'react'
 import {toast} from "react-toastify"
 import { usePostsHook } from './posts.hook';
 import { usePathname } from 'next/navigation';
+import { descriptionLimit } from '../constants';
 
 export const useNavbarHooks = () => {
 
@@ -24,8 +25,8 @@ export const useNavbarHooks = () => {
         if(postContent == "" && !postMedia){
             toast.error("Either enter content or add media!")
         }
-        if(postContent.length > 200){
-            toast.error("Content length cannot exceed 200 characters.");
+        if(postContent.length > descriptionLimit){
+            toast.error("Content length cannot exceed "+descriptionLimit+" characters.");
         }
         try{
             setLoading(true);

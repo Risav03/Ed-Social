@@ -7,6 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
 import { usePostsHook } from './posts.hook';
+import { descriptionLimit, userhandleLimit, usernameLimit } from '../constants';
 
 export const useEditProfileHooks = ({user}:{user:UserType | null}) => {
 
@@ -24,16 +25,28 @@ export const useEditProfileHooks = ({user}:{user:UserType | null}) => {
    const[loading, setLoading] = useState<boolean>(false);
 
    async function updateInfo(){
+
+    if(bio.length > descriptionLimit){
+        toast.error("Bio cannot exceed " + descriptionLimit + " characters.");
+        return;
+    }
+
+    if(username.length > usernameLimit){
+        toast.error("Username cannot exceed " + usernameLimit + " characters.");
+        return;
+    }
+
+    if(userhandle.length > userhandleLimit){
+        toast.error("Username cannot exceed " + userhandleLimit + " characters.");
+        return;
+    }
+
     try{
         setLoading(true);
         const formdata = new FormData();
         formdata.append('username', username);
         formdata.append('userhandle', userhandle.toLowerCase());
         formdata.append('bio', bio);
-
-        if(bio.length > 200){
-            toast.error("Bio cannot exceed 200 characters.")
-        }
 
         if(profilePic){
             formdata.append('profilePic', profilePic as File);

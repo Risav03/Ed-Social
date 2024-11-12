@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { AwsUploadService } from "@/services/awsUploadService";
 import Post from "@/schemas/postSchema";
 import { getToken } from "next-auth/jwt";
+import { descriptionLimit } from "@/lib/constants";
 
 export async function POST(req: any) {
     await AuthService.getAuthenticatedUser(req);
@@ -24,7 +25,7 @@ export async function POST(req: any) {
             return NextResponse.json({ error: "Content is required" }, { status: 400 });
         }
 
-        if (content.length > 200) {
+        if (content.length > descriptionLimit) {
             return NextResponse.json({ error: "Content exceeding length limit" }, { status: 406 });
         }
 

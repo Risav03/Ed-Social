@@ -9,6 +9,7 @@ import { AreaInput } from '@/components/UI/areaInput'
 import { ActionButton } from '@/components/UI/actionButton'
 import Image from 'next/image'
 import { Loader } from '@/components/UI/loader'
+import { descriptionLimit, userhandleLimit, usernameLimit } from '@/lib/constants'
 
 export const EditProfile = () => {
 
@@ -53,11 +54,11 @@ export const EditProfile = () => {
                             </label>
                         </div>
                         <div>
-                            <TextInput limit={30} content={username} heading='New username' placeholder={user?.username as string} setContent={setUsername} required={false} />
-                            <TextInput limit={20} content={userhandle} heading='New userhandle' placeholder={user?.userhandle as string} setContent={setUserhandle} required={false} />
+                            <TextInput limit={usernameLimit} content={username} heading='New username' placeholder={user?.username as string} setContent={setUsername} required={false} />
+                            <TextInput limit={userhandleLimit} content={userhandle} heading='New userhandle' placeholder={user?.userhandle as string} setContent={setUserhandle} required={false} />
                         </div>
                     </div>
-                    <AreaInput limit={200} content={bio} heading='Edit bio' placeholder={user?.bio as string} setContent={setBio} required={false} />
+                    <AreaInput limit={descriptionLimit} content={bio} heading='Edit bio' placeholder={user?.bio as string} setContent={setBio} required={false} />
 
 
                     <label htmlFor="dropzone-file2" className="flex my-4 flex-col items-center justify-center w-full h-fit border-2 border-web-textBoxShine border-dashed border-slate-400 rounded-lg cursor-pointer p-2">

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { AuthService } from "@/services/authService";
 import { AwsUploadService } from "@/services/awsUploadService";
+import { descriptionLimit } from "@/lib/constants";
 
 export async function GET(req:any){
     revalidatePath("/","layout");
@@ -33,7 +34,7 @@ export async function PATCH(req:any){
         const bio = formData.get('bio');
         const email = await req.nextUrl.pathname.split("/")[4];
 
-        if(bio.length > 200){
+        if(bio.length > descriptionLimit){
             return NextResponse.json({error:"Bio exceeding length limit"}, {status:406})
         }
 

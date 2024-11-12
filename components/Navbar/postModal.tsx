@@ -4,6 +4,7 @@ import { RxCross2 } from 'react-icons/rx'
 import { AreaInput } from '../UI/areaInput'
 import Image from 'next/image'
 import { ActionButton } from '../UI/actionButton'
+import { descriptionLimit } from '@/lib/constants'
 
 export const PostModal = ({ setPostModal, setPostContent, postContent, postMedia, setPostMedia, post }: { post:()=>void, setPostModal: Dispatch<SetStateAction<boolean>>, setPostContent:Dispatch<SetStateAction<string>>, postContent:string, postMedia:File | null | undefined, setPostMedia:Dispatch<SetStateAction<File|null | undefined>> }) => {
     return (
@@ -18,7 +19,7 @@ export const PostModal = ({ setPostModal, setPostContent, postContent, postMedia
                 </div>
 
                 <div>
-                    <AreaInput required={false} content={postContent} setContent={setPostContent} heading='Content' limit={200} placeholder='GM Community...'  />
+                    <AreaInput required={false} content={postContent} setContent={setPostContent} heading='Content' limit={descriptionLimit} placeholder='GM Community...'  />
                     <label htmlFor="dropzone-file" className="flex mb-4 mt-4 flex-col aspect-square items-center justify-center w-full border-2 border-web-textBoxShine border-dashed rounded-lg cursor-pointer p-2">
                         <div className="flex flex-col items-center aspect-square overflow-hidden justify-center rounded-lg w-full h-full hover:bg-web-textBoxShine">
                             {!postMedia ? (

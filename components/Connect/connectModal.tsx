@@ -4,6 +4,7 @@ import { TextInput } from '../UI/textInput'
 import { useConnectHook } from '@/lib/hooks/connect.hooks'
 import { RxCross2 } from "react-icons/rx";
 import { ActionButton } from '../UI/actionButton';
+import { usernameLimit } from '@/lib/constants';
 
 export const ConnectModal = ({ setLoginModal }: { setLoginModal: Dispatch<SetStateAction<boolean>> }) => {
 
@@ -35,7 +36,7 @@ export const ConnectModal = ({ setLoginModal }: { setLoginModal: Dispatch<SetSta
                             </div>
                         </div>
 
-                        <TextInput required={true} content={username} heading='Username' placeholder='Set a username' setContent={setUsername} />
+                        <TextInput required={true} content={username} limit={usernameLimit} heading='Username' placeholder='Set a username' setContent={setUsername} />
                         <TextInput required={true} content={email} heading='Email' placeholder='Enter an email' setContent={setEmail} />
                         <TextInput required={true} content={pwd} heading='Password' placeholder='Enter a password' setContent={setPwd} type='password' />
                         <TextInput required={true} content={repwd} heading='Re-enter Password' placeholder='Re-enter password' setContent={setRepwd} type='password' />

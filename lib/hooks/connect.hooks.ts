@@ -2,6 +2,7 @@ import React, { Dispatch, SetStateAction, useState } from 'react'
 import axios from "axios"
 import { signIn, signOut, useSession } from "next-auth/react";
 import { toast } from 'react-toastify';
+import { usernameLimit } from '../constants';
 
 export const useConnectHook = ({ setLoginModal }: { setLoginModal: Dispatch<SetStateAction<boolean>> }) => {
 
@@ -15,6 +16,11 @@ export const useConnectHook = ({ setLoginModal }: { setLoginModal: Dispatch<SetS
     async function register() {
         if(email == "" || pwd == "" || username == ""){
             toast.error("Enter valid credentials!");
+            return;
+        }
+
+        if(username.length > usernameLimit){
+            toast.error("Username cannot exceed " + usernameLimit + " characters.");
             return;
         }
 
