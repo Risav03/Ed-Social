@@ -83,7 +83,7 @@ export const usePostsHook = ({ pathname }: { pathname: string }) => {
       clearTimeout(timeoutId);
 
       setPosts(prevPosts => {
-        const newPosts = res.data.posts.filter(
+        const newPosts = res?.data?.posts?.filter(
           (newPost: PostType) => !prevPosts.some(
             existing => existing._id === newPost._id
           )
